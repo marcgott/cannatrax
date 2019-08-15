@@ -1,5 +1,5 @@
 {% include 'header.html' %}
-<h2>{{title_verb}} Plant</h2>
+<h2>{{title_verb}} Nutrient</h2>
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 <ul>
@@ -14,13 +14,15 @@
 <div class="input text">
                 {{ form.name.label }} {{ form.name(value=row['name']) }}</div>
 <div class="input select">
-                {{ form.source.label }} {{ form.source }}</div>
-<div class="input select">
-                {{ form.gender.label }} {{ form.gender }}</div>
-<div class="input select">
-                {{ form.strain.label }} {{ form.strain }}</div>
-<div class="input select">
-                {{ form.season.label }} {{ form.season }}</div>
+                {{ form.organic.label }} {{ form.organic }}</div>
+<div class="input text">
+                {{ form.nitrogen.label }} {{ form.nitrogen }}</div>
+<div class="input text">
+                {{ form.phosphorus.label }} {{ form.phosphorus }}</div>
+<div class="input text">
+                {{ form.potassium.label }} {{ form.potassium }}</div>
+<div class="input text">
+                {{ form.trace.label }} {{ form.trace }}</div>                
 <div class="input submit">
 {% if row['id'] %}
 <input type=hidden name=id value="{{row['id']}}" />
