@@ -1,0 +1,28 @@
+{% include 'header.html' %}
+<h2>Settings</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<ul>
+                    {% for message in messages %}
+ 	<li>{ { message[1] }}</li>
+{% endfor %}</ul>
+{% endif %}
+{% endwith %}
+<form action="" method="post">
+            {{form.csrf}}
+<div class="input text">
+                {{ form.date_format.label }} {{ form.date_format }}</div>
+<div class="input select">
+                {{ form.timezone.label }} {{ form.timezone }}</div>
+<div class="input select">
+                {{ form.temp.label }} {{ form.temp }}</div>
+<div class="input select">
+                {{ form.length.label }} {{ form.length }}</div>
+<div class="input select">
+                {{ form.volume.label }} {{ form.volume }}</div>
+<div class="input submit">
+                <input type="submit" value="Submit"></div>
+</form>
+
+{% include 'footer.html' %}

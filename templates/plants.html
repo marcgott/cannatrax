@@ -1,0 +1,18 @@
+{% include 'header.html' %}
+<h2>Plants</h2>
+<p><a href="{{ url_for('.add_new_plant_view') }}">Add Plant</a></p>
+
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+
+{{ table }}
+{% include 'footer.html' %}

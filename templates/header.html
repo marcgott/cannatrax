@@ -1,0 +1,24 @@
+<!doctype html>
+  <html>
+    <head>
+      <title>Cannatrax</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}" />
+    </head>
+    <body>
+      <h1>CannaTrax</h1>
+      <nav>
+        <ul class="navmenu">
+          <li class="menu-item"><a href="{{ url_for('.show_menu') }}">Dashboard</a></li>
+          <li class="menu-item"><a href="{{ url_for('.plants') }}">Daily log</a></li>
+          <li class="menu-item"><a href="{{ url_for('.plants') }}">Plants</a></li>
+
+<li class="menu-item"><a href="{{ url_for('.plants') }}">Environments</a></li>
+<li class="menu-item"><a href="{{ url_for('.plants') }}">Nutrients</a></li>
+<li class="menu-item"><a href="{{ url_for('.plants') }}">Repellents</a></li>
+
+          <li class="menu-item"><a href="{{ url_for('.show_strains') }}">Strains</a></li>
+          <li class="menu-item"><a href="{{ url_for('.show_seasons') }}">Seasons</a></li>
+<li class="menu-item"><a href="{{ url_for('.plants') }}">Reports</a></li>
+          <li class="menu-item"><a href="{{ url_for('.show_settings') }}">Settings</a></li>
+        </ul>
+      </nav>
