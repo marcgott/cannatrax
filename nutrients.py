@@ -76,7 +76,7 @@ def edit_nutrient(id):
 		_id = request.form['id']
 
 		sql = "UPDATE nutrient SET name=%s, organic=%s, nitrogen=%s, phosphorus=%s, potassium=%s, trace=%s WHERE id=%s"
-		data = (_name, _organic, _nitrogen, _phosphorus, _potassium, _trace)
+		data = (_name, _organic, _nitrogen, _phosphorus, _potassium, _trace, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
