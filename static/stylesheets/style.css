@@ -1,15 +1,21 @@
 * {font-family: 'Lexend Deca', sans-serif;}
-nav {background-color:#aaff99}
+nav {background-color:#7fbb37}
 label {display:block!important}
-.navmenu, .menu-item {display:inline-block;list-style-type: none;margin:.6em;padding:.2em}
-.menu-item a {spadding:.2em}
+.menu-item {display:inline-block;list-style-type: none;margin:.2em}
+.menu-item a {padding:.4em;color:#fff}
+.menu-item a:hover {background-color:#eeeeee;color:#587e16;text-decoration:none}
 
-.input {margin-bottom:.4em}
-#content{max-width:80%;margin:0 auto}
+
+#content{max-width:90%;margin:0 auto}
 #content ul {margin:.5em 0;padding:0}
 li.info {list-style-type:none;border-left:4px solid #77aa88;background-color:#ddffcc;padding:1em; width:80%}
 li.error {list-style-type:none;border-left:4px solid #aa7788;background-color:#ffccdd;padding:1em; width:80%}
 
+.input {margin-bottom:.4em}
+.log_row {vertical-align:top;background-color: #efefef;padding:.2em}
+.input.log {vertical-align:top;display:inline-block;min-width:5%}
+.input.log input[type=text] {display:inline-block!important;max-width:2.5em}
+.input.log.submit {vertical-align: bottom;}
 table.main.chart {width:100%}
 table.main.chart td {padding:0.4em}
 .statistics {border-collapse: separate;border-spacing:.3em}

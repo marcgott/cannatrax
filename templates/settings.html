@@ -1,26 +1,29 @@
 {% include 'header.html' %}
 <h2>Settings</h2>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-<ul>
-                    {% for message in messages %}
- 	<li>{ { message[1] }}</li>
-{% endfor %}</ul>
-{% endif %}
-{% endwith %}
-<form action="" method="post">
+<p>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li class="{{message[0]}}"><i class="glyphicon glyphicon-{{icon}}"></i> {{ message[1] }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<form action="/settings/update" method="POST">
             {{form.csrf}}
 <div class="input text">
                 {{ form.date_format.label }} {{ form.date_format }}</div>
 <div class="input select">
                 {{ form.timezone.label }} {{ form.timezone }}</div>
 <div class="input select">
-                {{ form.temp.label }} {{ form.temp }}</div>
+                {{ form.temp_units.label }} {{ form.temp_units }}</div>
 <div class="input select">
-                {{ form.length.label }} {{ form.length }}</div>
+                {{ form.length_units.label }} {{ form.length_units }}</div>
 <div class="input select">
-                {{ form.volume.label }} {{ form.volume }}</div>
+                {{ form.volume_units.label }} {{ form.volume_units }}</div>
 <div class="input submit">
                 <input type="submit" value="Submit"></div>
 </form>

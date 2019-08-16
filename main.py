@@ -13,6 +13,7 @@ from strains import *
 from environments import *
 from nutrients import *
 from repellents import *
+from log import *
 
 @app.route('/')
 def show_menu():
@@ -23,7 +24,19 @@ def show_menu():
 		cursor.execute(countsql)
 		rows = cursor.fetchall()
 		table = Statistics(rows)
-		return render_template('dashboard.html', table=table)
+
+		countsql = "SELECT * FROM options"
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute(countsql)
+		rows = cursor.fetchall()
+		settings_list = []
+		settings = {}
+		for row in rows:
+			settings[row['option_key']] = row['option_value']
+		settings_list.append(settings)
+		settings_table = Settings(settings_list)
+		return render_template('dashboard.html', table=table, settings_table=settings_table)
 	except Exception as e:
 		print(e)
 	finally:
@@ -32,9 +45,49 @@ def show_menu():
 
 @app.route('/settings')
 def show_settings():
-    form = SettingsForm(request.form)
-    return render_template('settings.html', form=form)
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT * FROM options")
+		rows = cursor.fetchall()
+		if rows:
+			form = SettingsForm(request.form)
+			for row in rows:
+				key = row['option_key']
+				value = row['option_value']
+				opt = getattr(form,key)
+				setattr(opt,'default',value)
+				#form.row['option_key'].default = row['option_value']
+			form.process()
+		return render_template('settings.html', form=form)
+	except Exception as e:
+			print(e)
 
+@app.route('/settings/update', methods=['POST'])
+def update_user():
+	try:
+		_date_format = request.form['date_format']
+		_timezone = request.form['timezone']
+		_temp_units = request.form['temp_units']
+		_length_units = request.form['length_units']
+		_volume_units = request.form['volume_units']
+		# validate the received values
+
+		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format'; "
+		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format)
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute(sql, data)
+		conn.commit()
+		flash('Settings updated successfully!','info')
+		return redirect('/settings')
+	except Exception as e:
+		flash('Settings not updated','error')
+		return redirect('/settings')
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,37 @@
+{% include 'header.html' %}
+<h2>{{title_verb}} Log</h2>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<ul>
+{% for message in messages %}
+ 	<li class="{{message[0]}}"><i class="glyphicon glyphicon-{{icon}}"></i> {{ message[1] }}</li>
+{% endfor %}</ul>
+{% endif %}
+{% endwith %}
+
+
+            {{form.csrf}}
+{% for row in rows %}
+<form action="/log/new" method="POST" class="logform" id="log_form-{{ row['id']}}" >
+  {{form.csrf}}
+<div class="input text"><h3>{{ row['name'] }}</h3></div>
+<div id="log_item_{{row['id']}}" class="log_row">
+  <div class="input log">{{ form.water.label }} {{ form.water(value=1) }}</div>
+  <div class="input log">{{ form.height.label }} {{ form.height }}</div>
+  <div class="input log">{{ form.span.label }} {{ form.span }}</div>
+  <div class="input log">{{ form.environment_ID.label }} {{ form.environment_ID }}</div>
+  <div class="input log">{{ form.nutrient_ID.label }} {{ form.nutrient_ID }}</div>
+  <div class="input log">{{ form.repellent_ID.label }} {{ form.repellent_ID }}</div>
+  <div class="input log">{{ form.stage.label }} {{ form.stage }}</div>
+  <div class="input log">{{ form.trim.label }} {{ form.trim(value=1) }}</div>
+  <div class="input log">{{ form.transplant.label }} {{ form.transplant(value=1)}}</div>
+  <div class="input log">{{ form.notes.label }} {{ form.notes }}</div>
+  <div class="input log submit">{{ form.plant_ID(value=row['id']) }}<input type="submit" value="Submit"></div>
+</div>
+</form>
+
+{% endfor %}
+
+
+
+{% include 'footer.html' %}

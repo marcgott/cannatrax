@@ -1,4 +1,14 @@
-from flask_table import Table, Col, LinkCol, ButtonCol, BoolNaCol, DateCol
+from flask_table import Table, Col, LinkCol, ButtonCol, BoolNaCol, DateCol, DatetimeCol
+from cannatrax import *
+
+class Log(Table):
+    table_id = ['daily_log']
+    classes = ['main','chart','log']
+    id = Col('id', show=False)
+    name = Col('Plant Name')
+
+    edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
+    #delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
 
 class Plant(Table):
     classes = ['main','chart','plant']
@@ -63,6 +73,8 @@ class Repellent(Table):
     delete = LinkCol('Delete', 'delete_repellent', url_kwargs=dict(id='id'))
 
 class Statistics(Table):
+    settings = get_settings()
+    table_id = ['statistics']
     classes = ['statistics']
     pc = Col('Plant Count')
     ec = Col('Environment Count')
@@ -70,4 +82,13 @@ class Statistics(Table):
     ac = Col('Season Count')
     rc = Col('Repellent Count')
     nc = Col('Nutrient Count')
-    lastlog = DateCol('Last Log')
+    lastlog = DatetimeCol('Last Log')
+
+class Settings(Table):
+    table_id = ['settings']
+    classes = ['statistics']
+    timezone = Col('Timezone')
+    temp_units = Col('Temperature Units')
+    volume_units = Col('Volume Units')
+    length_units = Col('Length_Units')
+    date_format = Col('Date Format')

@@ -1,18 +1,21 @@
-from wtforms import Form, TextField, SelectField, TextAreaField, DateField, validators, StringField, SubmitField
+from wtforms import Form, HiddenField, TextField, SelectField, TextAreaField, DateField, BooleanField, IntegerField, validators, StringField, SubmitField
 from pytz import all_timezones
 import pymysql
 from db_config import mysql
 
-def get_db_list(table):
+def get_db_list(**kwargs):
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT * FROM %s" % table)
+        cursor.execute("SELECT * FROM %s" % kwargs['table'])
         rows = cursor.fetchall()
-        results = [('Unknown','Unknown')]
+        optval = 0 if kwargs['idval'] == True else "Unknown"
+        opttxt = kwargs['idtxt'] if kwargs['idtxt'] is not None else "Unknown"
+
+        results = [(optval,opttxt)]
         for row in rows:
-        	results.append((str(row['name']),row['name']))
-        #print("RES:",results)
+        	optval = row['id'] if kwargs['idval'] == True else row['name']
+        	results.append((str(optval),row['name']))
         return results
     except Exception as e:
         print(e)
@@ -23,14 +26,14 @@ class SettingsForm(Form):
         timezone_choices.append((tz,tz))
     #print(timezone_choices)
     timezone = SelectField('Timezone:',choices=timezone_choices)
-    temp = SelectField('Temperature:', choices=[('C','Celsius'),('F','Farenheit'),('K','Kelvin')])
-    length = SelectField('Length:',choices=[('cm','Centimeters'),('in','Inches')])
-    volume = SelectField('Volume:',choices=[('ml','Mililiters'),('oz','Ounces')])
-    date_format = TextField('Date Format:')
+    temp_units = SelectField('Temperature:', choices=[('C','Celsius'),('F','Farenheit'),('K','Kelvin')])
+    length_units = SelectField('Length:',choices=[('cm','Centimeters'),('in','Inches')])
+    volume_units = SelectField('Volume:',choices=[('ml','Mililiters'),('oz','Ounces')])
+    date_format = SelectField('Date Format:', choices=[('yyyy-mm-dd','yyyy-mm-dd'),('mm/dd/yyyy','mm/dd/yyyy')])
 
 class PlantForm(Form):
-    strains = get_db_list('strain')
-    seasons = get_db_list('season')
+    strains = get_db_list(table='strain',idval = False,idtxt = "Unknown")
+    seasons = get_db_list(table='season',idval = False,idtxt = "Unknown")
 
     name = TextField('Name:', validators=[validators.required()])
     gender = SelectField('Gender:',choices=[('unknown','Unknown'),('male','Male'),('female','Female'),('hermaphrodite','Hermaphrodite')])
@@ -67,4 +70,20 @@ class RepellentForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     type = SelectField('Type:',choices=[('organic','Organic'),('chemical','Chemical'),('other','Other')])
     target = TextField('Target:')
+    notes = TextAreaField('Notes')
+
+class LogForm(Form):
+    environment = get_db_list(table = 'environment',idval = True,idtxt = "None")
+    nutrient = get_db_list(table = 'nutrient',idval = True,idtxt = "None")
+    repellent = get_db_list(table = 'repellent',idval = True,idtxt = "None")
+    plant_ID = HiddenField()
+    water = BooleanField('Water')
+    height = IntegerField('Height')
+    span = IntegerField('Span')
+    trim = BooleanField('Trim')
+    transplant = BooleanField('Transplant')
+    stage = SelectField('Stage',choices=[('germination','Germination'),('seedling','Seedling'),('vegitation','Vegitation'),('pre-flowering','Pre-flowering'),('flowering','Flowering'),('harvest','Harvest'),('dead','Dead')])
+    environment_ID = SelectField('Environment',choices=environment, coerce=int)
+    nutrient_ID = SelectField('Nutrient',choices=nutrient, coerce=int)
+    repellent_ID = SelectField('Repellent',choices=repellent, coerce=int)
     notes = TextAreaField('Notes')

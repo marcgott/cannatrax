@@ -1,0 +1,18 @@
+{% include 'header.html' %}
+<h2>Daily Log</h2>
+<p><a href="{{ url_for('.add_new_log_view') }}">Add Log</a></p>
+
+<p>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li class="{{message[0]}}"><i class="glyphicon glyphicon-{{icon}}"></i> {{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<strong>Total log entries: {{total_logs}}</strong>
+{{ table }}
+{% include 'footer.html' %}
