@@ -3,7 +3,7 @@
 import pymysql
 from app import app
 from db_config import mysql
-from flask import flash, render_template, request, redirect
+from flask import flash, render_template, request, redirect,session, abort
 from pytz import all_timezones
 from forms import *
 from tables import *
@@ -15,8 +15,14 @@ from nutrients import *
 from repellents import *
 from log import *
 
+program_name="CannaTrax"
+
 @app.route('/')
 def show_menu():
+	if not session.get('logged_in'):
+		form = LoginForm(request.form)
+		return render_template('login.html',form=form,program_name=program_name,operation="Log In",is_login=session.get('logged_in'))
+	operation="Dashboard"
 	try:
 		countsql = "SELECT (SELECT count(plant.id) FROM `plant`) as 'pc' ,(SELECT count(environment.id) FROM `environment`) as 'ec', (SELECT count(strain.id) FROM `strain`) as 'sc', (SELECT count(season.id) FROM `season`) as 'ac', (SELECT count(repellent.id) FROM `repellent`) as 'rc', (SELECT count(nutrient.id) FROM `nutrient`) as 'nc', (SELECT max(log.ts) FROM `log`) as 'lastlog'"
 		conn = mysql.connect()
@@ -36,15 +42,31 @@ def show_menu():
 			settings[row['option_key']] = row['option_value']
 		settings_list.append(settings)
 		settings_table = Settings(settings_list)
-		return render_template('dashboard.html', table=table, settings_table=settings_table)
+		return render_template('dashboard.html', table=table, settings_table=settings_table,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
 		cursor.close()
 		conn.close()
 
+@app.route('/login', methods=['POST'])
+def do_admin_login():
+	option = get_settings();
+	if request.form['password'] == option['password'] and request.form['username'] == option['username']:
+		session['logged_in'] = True
+		flash('Successful Login', 'info')
+	else:
+		flash('wrong password!')
+	return redirect("/")
+
+@app.route('/logout', methods=['GET','POST'])
+def do_logout():
+	session['logged_in'] = False
+	return redirect("/")
+
 @app.route('/settings')
 def show_settings():
+	operation="Settings"
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -59,13 +81,14 @@ def show_settings():
 				setattr(opt,'default',value)
 				#form.row['option_key'].default = row['option_value']
 			form.process()
-		return render_template('settings.html', form=form)
+		return render_template('operation_form.html', formpage='settings.html', form=form,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 			print(e)
 
 @app.route('/settings/update', methods=['POST'])
 def update_user():
 	try:
+		_password = request.form['password']
 		_date_format = request.form['date_format']
 		_timezone = request.form['timezone']
 		_temp_units = request.form['temp_units']
@@ -73,8 +96,8 @@ def update_user():
 		_volume_units = request.form['volume_units']
 		# validate the received values
 
-		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format'; "
-		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format)
+		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password'; "
+		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password)
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute(sql, data)

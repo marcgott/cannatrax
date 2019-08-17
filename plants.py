@@ -4,12 +4,14 @@ import pymysql
 from app import app
 #from flask_table import Table
 from db_config import mysql
-from flask import flash, render_template, request, redirect
+from flask import flash, render_template, request, redirect, session
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
 from forms import *
 
+operation="Plants"
 icon="leaf"
+
 #
 # Show default plants page, general statistics
 @app.route('/plants')
@@ -22,7 +24,7 @@ def show_plants():
 		table = Plant(rows)
 		table.border = True
 		total_plants = len(rows)
-		return render_template('plants.html', table=table, total_plants=total_plants)
+		return render_template('main.html', table=table, total_count=total_plants, add_operation_url='.add_new_plant_view',icon=icon,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -60,7 +62,7 @@ def add_new_plant_view():
 	except Exception as e:
 		print(e)
 	title_verb = "Add"
-	return render_template('add_plant.html', title_verb=title_verb, form=form, icon=icon, row=None)
+	return render_template('operation_form.html', formpage='add_plant.html', title_verb=title_verb, form=form, icon=icon, row=None, operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/plant/edit/<int:id>', methods=['POST','GET'])
 def edit_plant(id):
@@ -100,7 +102,7 @@ def edit_plant(id):
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
 
-		return render_template('add_plant.html', title_verb=title_verb, icon=icon, form=form, row=row)
+		return render_template('operation_form.html', formpage='add_plant.html', title_verb=title_verb, icon=icon, form=form, row=row, operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

@@ -4,11 +4,12 @@ import pymysql
 from app import app
 #from flask_table import Table
 from db_config import mysql
-from flask import flash, render_template, request, redirect
+from flask import flash, render_template, request, redirect, session
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
 from forms import *
 
+operation="Strains"
 icon="grain"
 #
 # Show default strains page, general statistics
@@ -22,7 +23,7 @@ def show_strains():
 		table = Strain(rows)
 		table.border = True
 		total_strains = len(rows)
-		return render_template('strains.html', table=table, total_strains=total_strains,icon=icon)
+		return render_template('main.html', table=table, total_count=total_strains, add_operation_url='.add_new_strain_view',icon=icon,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -58,7 +59,7 @@ def add_new_strain_view():
 	except Exception as e:
 		print(e)
 	title_verb = "Add"
-	return render_template('add_strain.html', title_verb=title_verb, form=form, icon=icon, row=None)
+	return render_template('operation_form.html', formpage='add_strain.html', title_verb=title_verb, form=form, icon=icon, row=None,operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/strain/edit/<int:id>', methods=['POST','GET'])
 def edit_strain(id):
@@ -94,7 +95,7 @@ def edit_strain(id):
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
 
-		return render_template('add_strain.html', title_verb=title_verb, icon=icon, form=form, row=row)
+		return render_template('operation_form.html', formpage='add_strain.html', title_verb=title_verb, icon=icon, form=form, row=row,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

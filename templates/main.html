@@ -1,7 +1,6 @@
 {% include 'header.html' %}
-<h2>Repellents</h2>
-<p><a href="{{ url_for('.add_new_repellent_view') }}">Add Repellent</a></p>
-
+<h2><i class="glyphicon glyphicon-{{icon}}" style="margin-right:.2em"></i>{{ operation }}</h2>
+<p><a href="{{ url_for(add_operation_url) }}">Add {{ operation }}</a></p>
 <p>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}
@@ -13,6 +12,6 @@
 	  {% endif %}
 	{% endwith %}
 </p>
-<strong>Total repellents: {{total_repellents}}</strong>
+<strong>Total {{ operation }}: {{total_count}}</strong>
 {{ table }}
 {% include 'footer.html' %}

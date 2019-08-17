@@ -1,4 +1,4 @@
-from wtforms import Form, HiddenField, TextField, SelectField, TextAreaField, DateField, BooleanField, IntegerField, validators, StringField, SubmitField
+from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, IntegerField, validators, StringField, SubmitField
 from pytz import all_timezones
 import pymysql
 from db_config import mysql
@@ -20,11 +20,17 @@ def get_db_list(**kwargs):
     except Exception as e:
         print(e)
 
+class LoginForm(Form):
+    username = TextField("Username")
+    password = PasswordField("Password")
+
 class SettingsForm(Form):
     timezone_choices = []
     for tz in all_timezones:
         timezone_choices.append((tz,tz))
     #print(timezone_choices)
+    username = TextField('Username:')
+    password = TextField('Password:')
     timezone = SelectField('Timezone:',choices=timezone_choices)
     temp_units = SelectField('Temperature:', choices=[('C','Celsius'),('F','Farenheit'),('K','Kelvin')])
     length_units = SelectField('Length:',choices=[('cm','Centimeters'),('in','Inches')])
@@ -34,7 +40,6 @@ class SettingsForm(Form):
 class PlantForm(Form):
     strains = get_db_list(table='strain',idval = False,idtxt = "Unknown")
     seasons = get_db_list(table='season',idval = False,idtxt = "Unknown")
-
     name = TextField('Name:', validators=[validators.required()])
     gender = SelectField('Gender:',choices=[('unknown','Unknown'),('male','Male'),('female','Female'),('hermaphrodite','Hermaphrodite')])
     strain = SelectField('Strain:',choices=strains)
@@ -70,12 +75,15 @@ class RepellentForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     type = SelectField('Type:',choices=[('organic','Organic'),('chemical','Chemical'),('other','Other')])
     target = TextField('Target:')
+    price = TextField('Price:')
+    purchase_location = TextField('Purchase Location:')
     notes = TextAreaField('Notes')
 
 class LogForm(Form):
     environment = get_db_list(table = 'environment',idval = True,idtxt = "None")
     nutrient = get_db_list(table = 'nutrient',idval = True,idtxt = "None")
     repellent = get_db_list(table = 'repellent',idval = True,idtxt = "None")
+    logdate = DateField('Date')
     plant_ID = HiddenField()
     water = BooleanField('Water')
     height = IntegerField('Height')

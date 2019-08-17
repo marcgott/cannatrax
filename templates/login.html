@@ -1,0 +1,20 @@
+{% include 'header.html' %}
+<style>
+  #login {background-color:#dfdfdf;position:absolute;max-width:30%;top:20%;left:35%;margin:0 auto;border:4px solid #7fbb37;padding:.4em}
+  #loginform {width:50%;margin:0 auto;}
+</style>
+<div id="login">
+  <img src="{{ url_for('static',filename='images/logo.png') }}" />
+  <div id="loginform">
+  <form action="/login" method="post">
+              {{form.csrf}}
+  <div class="input text">
+                  {{ form.username.label }} {{ form.username }}</div>
+  <div class="input text">
+                  {{ form.password.label }} {{ form.password }}</div>
+  <div class="input text">
+                  <input type="submit" value="Log in" /></div>
+  </form>
+  </div>
+</div>
+{% include 'footer.html' %}

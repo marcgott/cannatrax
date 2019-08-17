@@ -1,13 +1,22 @@
-from flask_table import Table, Col, LinkCol, ButtonCol, BoolNaCol, DateCol, DatetimeCol
+from flask_table import Table, Col, LinkCol, ButtonCol, BoolCol, BoolNaCol, DateCol, DatetimeCol
 from cannatrax import *
 
 class Log(Table):
     table_id = ['daily_log']
     classes = ['main','chart','log']
     id = Col('id', show=False)
-    name = Col('Plant Name')
-
-    edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
+    plant_name = Col('Plant Name')
+    ts = DatetimeCol('Time Stamp', datetime_format='medium')
+    stage = Col('Stage')
+    water = BoolCol('Watered',  yes_display='Yes', no_display='No')
+    height = Col('Height')
+    span = Col('Span')
+    nutrient_name = Col('Nutrient')
+    repellent_name = Col('Repellent')
+    environment_name = Col('Environment')
+    trim = BoolCol('Trim',  yes_display='Yes', no_display='No')
+    transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')
+    #edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     #delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
 
 class Plant(Table):
@@ -68,6 +77,8 @@ class Repellent(Table):
     name = Col('Name')
     type = Col('Type')
     target = Col('Target')
+    price = Col('Price')
+    purchase_location = Col('Purchase Location')
     notes = Col('Notes')
     edit = LinkCol('Edit', 'edit_repellent', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_repellent', url_kwargs=dict(id='id'))
@@ -87,6 +98,8 @@ class Statistics(Table):
 class Settings(Table):
     table_id = ['settings']
     classes = ['statistics']
+    username = Col('Username')
+    password = Col('Password', show=False)
     timezone = Col('Timezone')
     temp_units = Col('Temperature Units')
     volume_units = Col('Volume Units')

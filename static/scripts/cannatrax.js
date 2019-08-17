@@ -6,4 +6,7 @@ $(document).ready(function() {
                form_row_id = $(this).closest("form").attr('id')
                $(this).hide()
             });
+            $( function() {
+              $( ".datefield" ).datepicker();
+            } );
          });

@@ -1,11 +1,11 @@
 {% include 'header.html' %}
 <h2>Dashboard</h2>
 <p>
-	{% with messages = get_flashed_messages() %}
+	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}
 		<ul class=flashes>
 		{% for message in messages %}
-		  <li>{{ message }}</li>
+		  <li class="{{message[0]}}"><i class="glyphicon glyphicon-{{icon}}"></i> {{ message[1] }}</li>
 		{% endfor %}
 		</ul>
 	  {% endif %}
