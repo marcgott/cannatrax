@@ -6,7 +6,7 @@ class Log(Table):
     classes = ['main','chart','log']
     id = Col('id', show=False)
     plant_name = Col('Plant Name')
-    ts = DatetimeCol('Time Stamp', datetime_format='medium')
+    logdate = DateCol('Log Date', date_format='medium')
     stage = Col('Stage')
     water = BoolCol('Watered',  yes_display='Yes', no_display='No')
     height = Col('Height')
@@ -27,6 +27,7 @@ class Plant(Table):
     strain_ID = Col('Strain')
     season_ID = Col('Season')
     source = Col('Source')
+    details = LinkCol('Details', 'view_plant', url_kwargs=dict(id='id'))
     edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
 

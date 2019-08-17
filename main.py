@@ -42,7 +42,8 @@ def show_menu():
 			settings[row['option_key']] = row['option_value']
 		settings_list.append(settings)
 		settings_table = Settings(settings_list)
-		return render_template('dashboard.html', table=table, settings_table=settings_table,operation=operation,is_login=session.get('logged_in'))
+		icon="tachometer-alt"
+		return render_template('dashboard.html', icon=icon, table=table, settings_table=settings_table,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -66,6 +67,8 @@ def do_logout():
 
 @app.route('/settings')
 def show_settings():
+	if check_login() is not True:
+		return redirect("/")
 	operation="Settings"
 	try:
 		conn = mysql.connect()
@@ -81,7 +84,8 @@ def show_settings():
 				setattr(opt,'default',value)
 				#form.row['option_key'].default = row['option_value']
 			form.process()
-		return render_template('operation_form.html', formpage='settings.html', form=form,operation=operation,is_login=session.get('logged_in'))
+		icon="bars"
+		return render_template('operation_form.html', formpage='settings.html', icon=icon,form=form,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 			print(e)
 

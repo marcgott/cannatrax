@@ -10,11 +10,13 @@ from tables import *
 from forms import *
 
 operation="Seasons"
-icon="hourglass"
+icon="sun"
 #
 # Show default seasons page, general statistics
 @app.route('/seasons')
 def show_seasons():
+	if check_login() is not True:
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -49,7 +51,7 @@ def add_new_season_view():
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
-			icon="hourglass"
+			icon="sun"
 			flash('New Season Added!','info')
 		except Exception as e:
 			icon="remove"
@@ -80,7 +82,7 @@ def edit_season(id):
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		icon="hourglass"
+		icon="sun"
 		flash('season updated successfully!','info')
 
 	try:

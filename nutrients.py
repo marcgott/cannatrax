@@ -15,6 +15,8 @@ icon="tint"
 # Show default nutrients page, general statistics
 @app.route('/nutrients')
 def show_nutrients():
+	if check_login() is not True:
+		return redirect("/")	
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)

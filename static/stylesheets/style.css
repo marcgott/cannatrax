@@ -1,16 +1,20 @@
 * {font-family: 'Lexend Deca', sans-serif;}
+body{background-color: #efffef}
 nav {background-color:#7fbb37}
 label {display:block!important}
 .menu-item {display:inline-block;list-style-type: none;margin:.2em}
 .menu-item a {padding:.4em;color:#fff}
 .menu-item a:hover {background-color:#eeeeee;color:#587e16;text-decoration:none}
 
+#login {background-color:#dfdfdf;position:absolute;max-width:30%;top:20%;left:35%;margin:0 auto;border:4px solid #7fbb37;padding:.4em}
+#loginform {width:50%;margin:0 auto;}
 
 #content{max-width:90%;margin:0 auto}
 #content ul {margin:.5em 0;padding:0}
 li.info {list-style-type:none;border-left:4px solid #77aa88;background-color:#ddffcc;padding:1em; width:80%}
 li.error {list-style-type:none;border-left:4px solid #aa7788;background-color:#ffccdd;padding:1em; width:80%}
 
+.operation_btn {color:#ffffff; padding:.4em;background-color:#7fbb37;border-radius:.6em}
 .input {margin-bottom:.4em}
 .log_row {vertical-align:top;background-color: #efefef;padding:.2em}
 .input.log {vertical-align:top;display:inline-block;min-width:5%}

@@ -10,11 +10,13 @@ from tables import *
 from forms import *
 
 operation="Repellents"
-icon="ban-circle"
+icon="bug"
 #
 # Show default repellents page, general statistics
 @app.route('/repellents')
 def show_repellents():
+	if check_login() is not True:
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -34,12 +36,16 @@ def show_repellents():
 # Display and process new repellent
 @app.route('/repellent/new', methods=['GET','POST'])
 def add_new_repellent_view():
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == 'POST':
 		try:
 			_name = request.form['name']
 			_type = request.form['type']
 			_target = request.form['target']
+			_price = request.form['price']
+			_purchase_location = request.form['purchase_location']
 			_notes = request.form['notes']
 
 			sql = "INSERT INTO repellent(name,type,target,notes) VALUES(%s, %s, %s,%s)"
@@ -48,7 +54,7 @@ def add_new_repellent_view():
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
-			icon="ban-circle"
+			icon="bug"
 			flash('New repellent Added!','info')
 		except Exception as e:
 			icon="remove"
@@ -64,22 +70,26 @@ def add_new_repellent_view():
 
 @app.route('/repellent/edit/<int:id>', methods=['POST','GET'])
 def edit_repellent(id):
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == "POST":
 		_name = str(request.form['name'])
 		_type = request.form['type']
 		_target = request.form['target']
 		_notes = request.form['notes']
+		_price = request.form['price']
+		_purchase_location = request.form['purchase_location']
 		_id = request.form['id']
 
-		sql = "UPDATE repellent SET name=%s, type=%s, target=%s, notes=%s WHERE id=%s"
-		data = (_name, _type, _target, _notes, _id)
+		sql = "UPDATE repellent SET name=%s, type=%s, target=%s, price=%s, purchase_location=%s, notes=%s WHERE id=%s"
+		data = (_name, _type, _target, _price, _purchase_location, _notes, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		icon="ban-circle"
-		flash('repellent updated successfully!','info')
+		icon="bug"
+		flash('Repellent updated successfully!','info')
 
 	try:
 		conn = mysql.connect()
@@ -92,6 +102,8 @@ def edit_repellent(id):
 			form.name.default=row['name']
 			form.type.default=row['type']
 			form.target.default=row['target']
+			form.purchase_location.default=row['purchase_location']
+			form.price.default=row['price']
 			form.notes.default=row['notes']
 			form.process()
 		else:
@@ -112,7 +124,7 @@ def delete_repellent(id):
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM repellent WHERE id=%s", (id,))
 		conn.commit()
-		icon="ban-circle"
+		icon="bug"
 		flash('repellent deleted successfully!','info')
 	except Exception as e:
 		print(e)

@@ -1,6 +1,14 @@
 import pymysql
 from app import app
 from db_config import mysql
+from flask import session, redirect
+from forms import LoginForm
+
+def check_login():
+    if not session.get('logged_in'):
+        return False
+    return True
+
 
 def get_settings():
 	try:

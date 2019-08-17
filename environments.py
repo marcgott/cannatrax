@@ -10,11 +10,13 @@ from tables import *
 from forms import *
 
 operation="Environments"
-icon="home"
+icon="spa"
 #
 # Show default environments page, general statistics
 @app.route('/environments')
 def show_environments():
+	if check_login() is not True:
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -47,7 +49,7 @@ def add_new_environment_view():
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
-			icon="home"
+			icon="spa"
 			flash('New Environment Added!','info')
 		except Exception as e:
 			icon="remove"
@@ -76,7 +78,7 @@ def edit_environment(id):
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		icon="home"
+		icon="spa"
 		flash('environment updated successfully!','info')
 
 	try:
@@ -94,7 +96,7 @@ def edit_environment(id):
 		else:
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
-
+		icon="spa"
 		return render_template('operation_form.html', formpage='add_environment.html', title_verb=title_verb, icon=icon, form=form, row=row,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)

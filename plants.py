@@ -16,6 +16,8 @@ icon="leaf"
 # Show default plants page, general statistics
 @app.route('/plants')
 def show_plants():
+	if check_login() is not True:
+		return redirect("/")	
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -123,3 +125,23 @@ def delete_plant(id):
 		cursor.close()
 		conn.close()
 	return redirect("/plants")
+
+@app.route('/plant/view/<int:id>')
+def view_plant(id):
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT * FROM plant WHERE id=%s", (id,))
+		conn.commit()
+		row = cursor.fetchone()
+		print(row)
+
+		cursor.execute("SELECT MAX( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
+		conn.commit()
+		rows = cursor.fetchall()
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()
+	return render_template("plants.html",row=row,rows=rows,is_login=session.get('logged_in'))

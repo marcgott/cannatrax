@@ -10,11 +10,13 @@ from tables import *
 from forms import *
 
 operation="Strains"
-icon="grain"
+icon="dna"
 #
 # Show default strains page, general statistics
 @app.route('/strains')
 def show_strains():
+	if check_login() is not True:
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
@@ -47,7 +49,7 @@ def add_new_strain_view():
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
-			icon="grain"
+			icon="dna"
 			flash('New Strain Added!','info')
 		except Exception as e:
 			icon="remove"
@@ -76,7 +78,7 @@ def edit_strain(id):
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		icon="grain"
+		icon="dna"
 		flash('Strain updated successfully!','info')
 
 	try:
@@ -109,7 +111,7 @@ def delete_strain(id):
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM strain WHERE id=%s", (id,))
 		conn.commit()
-		icon="grain"
+		icon="dna"
 		flash('Strain deleted successfully!','info')
 	except Exception as e:
 		print(e)

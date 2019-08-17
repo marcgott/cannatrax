@@ -1,0 +1,16 @@
+{% include 'header.html' %}
+<h2>{{ row.name }}</h2>
+
+<p>Season: {{ row['season_ID'] }}</p>
+<p>Gender: {{ row['gender'] }}</p>
+<p>Source: {{ row['source'] }}</p>
+<p>Strain: {{ row['strain_ID'] }}</p>
+
+
+<h3>Lifecycle</h3>
+{% for row in rows %}
+{% if row['stage'] %}
+	<strong>{{ row['stage'] }}</strong>: {{ row['logdate'] }}<br>
+{% endif %}
+{% endfor %}
+{% include 'footer.html' %}

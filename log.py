@@ -9,21 +9,24 @@ from wtforms import Form, TextField, SelectField, TextAreaField, validators, Str
 from tables import *
 from forms import *
 
-icon="check"
+icon="clipboard-check"
 operation="Log"
 #
 # Show default logs page, general statistics
 @app.route('/logs')
 def show_logs():
+	if check_login() is not True:
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID ORDER BY ts,plant_ID DESC LIMIT 20")
+		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID ORDER BY logdate DESC LIMIT 20")
 		rows = cursor.fetchall()
 		table = Log(rows)
 		table.border = True
 		total_logs = len(rows)
-		return render_template('logs.html', table=table, total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
+		#icon="clipboard-check"
+		return render_template('logs.html', table=table, icon=icon, total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -55,7 +58,7 @@ def add_new_log_view():
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
-			icon="check"
+			icon="clipboard-check"
 			flash('New Log Added!','info')
 		except Exception as e:
 			icon="remove"
@@ -72,6 +75,7 @@ def add_new_log_view():
 	except Exception as e:
 		print(e)
 	title_verb = "Add"
+	icon="clipboard-check"
 	return render_template('operation_form.html', formpage='add_log.html', title_verb=title_verb, form=form, icon=icon, rows=rows,operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/log/edit/<int:id>', methods=['POST','GET'])
@@ -91,7 +95,7 @@ def edit_log(id):
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		icon="leaf"
+		icon="clipboard-check"
 		flash('Log updated successfully!','info')
 
 	try:
@@ -112,7 +116,7 @@ def edit_log(id):
 		else:
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
-
+		icon="clipboard-check"
 		return render_template('operation_form.html', formpage='add_log.html', title_verb=title_verb, icon=icon, form=form, row=row, rowid=row['id'],operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
