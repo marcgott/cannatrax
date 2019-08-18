@@ -3,6 +3,7 @@
 import pymysql
 from app import app
 from db_config import mysql
+from werkzeug import generate_password_hash, check_password_hash
 from flask import flash, render_template, request, redirect,session, abort
 from pytz import all_timezones
 from forms import *
@@ -53,6 +54,8 @@ def show_menu():
 @app.route('/login', methods=['POST'])
 def do_admin_login():
 	option = get_settings();
+	print(generate_password_hash(option['password']))
+	print(check_password_hash(password=request.form['password'], pwhash=option['password']))
 	if request.form['password'] == option['password'] and request.form['username'] == option['username']:
 		session['logged_in'] = True
 		flash('Successful Login', 'info')
@@ -92,6 +95,7 @@ def show_settings():
 @app.route('/settings/update', methods=['POST'])
 def update_user():
 	try:
+		_username = request.form['username']
 		_password = request.form['password']
 		_date_format = request.form['date_format']
 		_timezone = request.form['timezone']
@@ -103,18 +107,21 @@ def update_user():
 		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password'; "
 		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password)
 		conn = mysql.connect()
-		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
 		flash('Settings updated successfully!','info')
 		return redirect('/settings')
 	except Exception as e:
+		icon="times-circle"
 		flash('Settings not updated','error')
-		return redirect('/settings')
 		print(e)
+		return redirect('/settings')
+
 	finally:
-		cursor.close()
-		conn.close()
+		pass
+		#cursor.close()
+		#conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

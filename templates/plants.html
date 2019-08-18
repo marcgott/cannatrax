@@ -1,16 +1,19 @@
 {% include 'header.html' %}
-<h2>{{ row.name }}</h2>
-
-<p>Season: {{ row['season_ID'] }}</p>
-<p>Gender: {{ row['gender'] }}</p>
-<p>Source: {{ row['source'] }}</p>
-<p>Strain: {{ row['strain_ID'] }}</p>
-
+<h2><i class="fas fa-{{icon[operation|lower]}}" style="margin-right:.2em"></i>{{ row.name }}</h2>
+<p><a href="{{ url_for('edit_plant',id=row['id'])}}" class="operation_btn">Edit {{ row.name }}</a></p>
+<p><i class="fas fa-{{icon['seasons']}}" style="margin-right:.2em"></i>Season: {{ row['season_name'] }}</p>
+<p><i class="fas fa-{{icon['gender']}}" style="margin-right:.2em"></i>Gender: {{ row['gender'] }}</p>
+<p><i class="fas fa-{{icon['source']}}" style="margin-right:.2em"></i>Source: {{ row['source'] }}</p>
+<p><i class="fas fa-{{icon['strains']}}" style="margin-right:.2em"></i>Strain: {{ row['strain_name'] }}</p>
+<p><i class="fas fa-{{icon['environments']}}" style="margin-right:.2em"></i>Current Environment: {{ row['current_environment'] }}</p>
+<p><i class="fas fa-{{icon[row['current_stage']|lower]}}" style="margin-right:.2em"></i>Current Stage: {{ row['current_stage'] }}</p>
+<p><i class="fas fa-arrows-alt-v" style="margin-right:.2em"></i>Current Height: {{ row['current_height'] }}{{ option['length_units']}}</p>
+<p><i class="fas fa-arrows-alt-h" style="margin-right:.2em"></i>Current Span: {{ row['current_span'] }}{{ option['length_units']}}</p>
 
 <h3>Lifecycle</h3>
 {% for row in rows %}
 {% if row['stage'] %}
-	<strong>{{ row['stage'] }}</strong>: {{ row['logdate'] }}<br>
+	<strong><i class="fas fa-{{icon[row['stage']|lower]}}" style="margin-right:.2em"></i>{{ row['stage'] }}</strong>: {{ row['logdate'] }}<br>
 {% endif %}
 {% endfor %}
 {% include 'footer.html' %}

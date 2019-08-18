@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 <h2><i class="fas fa-{{icon}}" style="margin-right:.2em"></i>{{ operation }}</h2>
-<p><a href="{{ url_for(add_operation_url) }}" class="operation_btn">Add {{ operation }}</a></p>
+<p><a href="{{ url_for(add_operation_url) }}" class="operation_btn"><i class="fas fa-plus-circle" style="margin-right:.2em"></i>Add {{ operation }}</a></p>
 <p>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}

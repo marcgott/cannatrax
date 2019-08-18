@@ -1,6 +1,6 @@
-{% include 'header.html' %}
+{% include 'header_print.html' %}
 <h2><i class="fas fa-{{icon}}" style="margin-right:.2em"></i>Daily Log</h2>
-<p><a href="{{ url_for('.add_new_log_view') }}" class="operation_btn"><i class="fas fa-plus-circle" style="margin-right:.2em"></i>Add Log</a>  <a href="{{ url_for('.add_print_log_view') }}" class="operation_btn"><i class="fas fa-print" style="margin-right:.2em"></i>Print Log</a></p>
+
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}
 		<ul class=flashes>
@@ -11,6 +11,6 @@
 	  {% endif %}
 	{% endwith %}
 </p>
-<strong>Last {{total_logs}} Log Entries:</strong>
+<h3>Log Date: {{total_logs}}</h3>
 {{ table }}
 {% include 'footer.html' %}

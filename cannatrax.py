@@ -9,7 +9,9 @@ def check_login():
         return False
     return True
 
-
+def get_icons(operation=None):
+    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','seasons':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegitation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast'}
+    return icons
 def get_settings():
 	try:
 		conn = mysql.connect()

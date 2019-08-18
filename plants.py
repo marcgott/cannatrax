@@ -17,11 +17,11 @@ icon="leaf"
 @app.route('/plants')
 def show_plants():
 	if check_login() is not True:
-		return redirect("/")	
+		return redirect("/")
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM plant ORDER BY cast(name as unsigned) ASC")
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, season.name as season_name,environment.name as current_environment, plant.source, plant.current_stage FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN season ON season.id=plant.season_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
 		rows = cursor.fetchall()
 		table = Plant(rows)
 		table.border = True
@@ -37,6 +37,8 @@ def show_plants():
 # Display and process new plant
 @app.route('/plant/new', methods=['GET','POST'])
 def add_new_plant_view():
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == 'POST':
 		try:
@@ -68,6 +70,8 @@ def add_new_plant_view():
 
 @app.route('/plant/edit/<int:id>', methods=['POST','GET'])
 def edit_plant(id):
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == "POST":
 		_name = request.form['name']
@@ -128,14 +132,16 @@ def delete_plant(id):
 
 @app.route('/plant/view/<int:id>')
 def view_plant(id):
+	if check_login() is not True:
+		return redirect("/")
+	title_verb="View"
 	try:
+		option = get_settings()
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM plant WHERE id=%s", (id,))
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, season.name as season_name, plant.source, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN season ON season.id=plant.season_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
-		print(row)
-
 		cursor.execute("SELECT MAX( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
 		rows = cursor.fetchall()
@@ -144,4 +150,4 @@ def view_plant(id):
 	finally:
 		cursor.close()
 		conn.close()
-	return render_template("plants.html",row=row,rows=rows,is_login=session.get('logged_in'))
+	return render_template("plants.html",icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))

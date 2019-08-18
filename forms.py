@@ -38,10 +38,10 @@ class SettingsForm(Form):
     date_format = SelectField('Date Format:', choices=[('yyyy-mm-dd','yyyy-mm-dd'),('mm/dd/yyyy','mm/dd/yyyy')])
 
 class PlantForm(Form):
-    strains = get_db_list(table='strain',idval = False,idtxt = "Unknown")
-    seasons = get_db_list(table='season',idval = False,idtxt = "Unknown")
+    strains = get_db_list(table='strain',idval = True,idtxt = "Unknown")
+    seasons = get_db_list(table='season',idval = True,idtxt = "Unknown")
     name = TextField('Name:', validators=[validators.required()])
-    gender = SelectField('Gender:',choices=[('unknown','Unknown'),('male','Male'),('female','Female'),('hermaphrodite','Hermaphrodite')])
+    gender = SelectField('Gender:',choices=[('Unknown','Unknown'),('Male','Male'),('Female','Female'),('Hermaphrodite','Hermaphrodite')])
     strain = SelectField('Strain:',choices=strains)
     season = SelectField('Season:',choices=seasons)
     source = SelectField('Source:',choices=[('seed','Seed'),('clone','Clone'),('other','Other')])
@@ -90,7 +90,7 @@ class LogForm(Form):
     span = IntegerField('Span')
     trim = BooleanField('Trim')
     transplant = BooleanField('Transplant')
-    stage = SelectField('Stage',choices=[('germination','Germination'),('seedling','Seedling'),('vegitation','Vegitation'),('pre-flowering','Pre-flowering'),('flowering','Flowering'),('harvest','Harvest'),('dead','Dead')])
+    stage = SelectField('Stage',choices=[('Germination','Germination'),('Seedling','Seedling'),('Vegitation','Vegitation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
     environment_ID = SelectField('Environment',choices=environment, coerce=int)
     nutrient_ID = SelectField('Nutrient',choices=nutrient, coerce=int)
     repellent_ID = SelectField('Repellent',choices=repellent, coerce=int)

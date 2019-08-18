@@ -2,7 +2,7 @@ from flask_table import Table, Col, LinkCol, ButtonCol, BoolCol, BoolNaCol, Date
 from cannatrax import *
 
 class Log(Table):
-    table_id = ['daily_log']
+    table_id = 'daily_log'
     classes = ['main','chart','log']
     id = Col('id', show=False)
     plant_name = Col('Plant Name')
@@ -16,17 +16,29 @@ class Log(Table):
     environment_name = Col('Environment')
     trim = BoolCol('Trim',  yes_display='Yes', no_display='No')
     transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')
-    #edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
-    #delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
+    notes = Col('Notes')
+
+class PrintLog(Table):
+    table_id = 'print_log'
+    name = Col('Plant Name')
+    picture = Col('Picture')
+    water = Col('Water',td_html_attrs={'class':'printblank'})
+    nutrient = Col('Nutrient')
+    height = Col('Height',td_html_attrs={'class':'printblank'})
+    span = Col('Span',td_html_attrs={'class':'printblank'})
+    transplant = Col('Transplant')
+    notes = Col('Notes',column_html_attrs={'class':'printnotes'})
 
 class Plant(Table):
     classes = ['main','chart','plant']
     id = Col('id', show=False)
     name = Col('Name')
     gender = Col('Gender')
-    strain_ID = Col('Strain')
-    season_ID = Col('Season')
-    source = Col('Source')
+    strain_name = Col('Strain')
+    season_name = Col('Season', show=False)
+    current_stage = Col('Current Stage', show=False)
+    current_environment = Col('Current Environment', show=False)
+    source = Col('Source', show=False)
     details = LinkCol('Details', 'view_plant', url_kwargs=dict(id='id'))
     edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))

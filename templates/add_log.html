@@ -1,16 +1,17 @@
+<p><input type=hidden name="globaldate" id="globaldatefield" class="datefield" /><a href="#" class="operation_btn" id="globaldate" class="datefield hasDatepicker"><i class="fas fa-calendar-day" style="margin-right:.2em"></i>Set Date</a>  <a href="#" class="operation_btn" id="globalwater"><i class="fas fa-fill-drip" style="margin-right:.2em"></i>Water All</a>  <span href="#" class="operation_btn" id="globalenv"><i class="fas fa-{{icons['environments']}}" style="margin-right:.2em"></i>Set Environment {{ form.environment_ID(id="global_environment_ID"|escape) }}</span>  <span href="#" class="operation_btn" id="globalnutrient"><i class="fas fa-{{icons['nutrients']}}" style="margin-right:.2em"></i>Set Nutrient {{ form.nutrient_ID(id="global_nutrient_ID"|escape) }}</span>  <span href="#" class="operation_btn" id="globalrepellent"><i class="fas fa-{{icons['repellents']}}" style="margin-right:.2em"></i>Set Repellent {{ form.repellent_ID(id="global_repellent_ID"|escape) }}</span>  <span class="operation_btn" id="globalstage"><i class="fas fa-leaf" style="margin-right:.2em"></i>Set Stage {{ form.stage(id="global_stage"|escape) }}</span></p>
 {% for row in rows %}
-<form action="/log/new" method="POST" class="logform" id="log_form-{{ rowid }}" >
+<form action="/log/new" method="POST" class="logform" id="log_form-{{ row['id'] }}" >
   {{form.csrf}}
 <div class="input text"><h3>{{ row['name'] }}</h3></div>
 <div id="log_item_{{row['id']}}" class="log_row">
   <div class="input log">{{ form.logdate.label }} {{ form.logdate(class_="datefield",id="logdate-"+row['id']|escape )  }}</div>
-  <div class="input log">{{ form.water.label }} {{ form.water(value=1,id="water-"+row['id']|escape) }}</div>
+  <div class="input log">{{ form.water.label }} {{ form.water(value=1,class="watercheck",id="water-"+row['id']|escape) }}</div>
   <div class="input log">{{ form.height.label }} {{ form.height(id="height-"+row['id']|escape) }}</div>
   <div class="input log">{{ form.span.label }} {{ form.span(id="span-"+row['id']|escape) }}</div>
-  <div class="input log">{{ form.environment_ID.label }} {{ form.environment_ID(id="environment_ID-"+row['id']|escape) }}</div>
-  <div class="input log">{{ form.nutrient_ID.label }} {{ form.nutrient_ID }}</div>
-  <div class="input log">{{ form.repellent_ID.label }} {{ form.repellent_ID }}</div>
-  <div class="input log">{{ form.stage.label }} {{ form.stage }}</div>
+  <div class="input log">{{ form.environment_ID.label }} {{ form.environment_ID(class_="environmentfield", id="environment_ID-"+row['id']|escape) }}</div>
+  <div class="input log">{{ form.nutrient_ID.label }} {{ form.nutrient_ID(class_="nutrientfield", id="nutrient_ID-"+row['id']|escape) }}</div>
+  <div class="input log">{{ form.repellent_ID.label }} {{ form.repellent_ID(class_="repellentfield", id="repellent_ID-"+row['id']|escape) }}</div>
+  <div class="input log">{{ form.stage.label }} {{ form.stage(class_="stagefield") }}</div>
   <div class="input log">{{ form.trim.label }} {{ form.trim(value=1) }}</div>
   <div class="input log">{{ form.transplant.label }} {{ form.transplant(value=1)}}</div>
   <div class="input log">{{ form.notes.label }} {{ form.notes }}</div>
