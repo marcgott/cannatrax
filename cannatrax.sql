@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2019 at 11:05 PM
+-- Generation Time: Aug 18, 2019 at 04:17 PM
 -- Server version: 5.5.62-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.29
 
@@ -43,20 +43,21 @@ CREATE TABLE IF NOT EXISTS `environment` (
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plant_ID` int(11) NOT NULL,
-  `nutrient_ID` int(11) NOT NULL,
-  `environment_ID` int(11) NOT NULL,
-  `repellent_ID` int(11) NOT NULL,
+  `nutrient_ID` int(11) DEFAULT NULL,
+  `environment_ID` int(11) DEFAULT NULL,
+  `repellent_ID` int(11) DEFAULT NULL,
+  `stage` varchar(64) DEFAULT NULL,
+  `water` tinyint(1) DEFAULT NULL,
+  `trim` tinyint(1) DEFAULT NULL,
+  `height` decimal(3,1) DEFAULT NULL,
+  `span` decimal(3,1) DEFAULT NULL,
+  `transplant` tinyint(1) DEFAULT NULL,
+  `photo` blob,
+  `notes` text CHARACTER SET utf8,
+  `logdate` date DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `stage` enum('germination','seedling','vegitation','pre-flowering','flowering','harvest','dead') NOT NULL,
-  `water` tinyint(1) NOT NULL DEFAULT '0',
-  `trim` tinyint(1) NOT NULL,
-  `height` int(3) NOT NULL,
-  `span` int(3) NOT NULL,
-  `transplant` tinyint(1) NOT NULL,
-  `photo` blob NOT NULL,
-  `notes` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=130 ;
 
 -- --------------------------------------------------------
 
@@ -73,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `nutrient` (
   `potassium` int(2) NOT NULL,
   `trace` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -83,15 +84,23 @@ CREATE TABLE IF NOT EXISTS `nutrient` (
 
 CREATE TABLE IF NOT EXISTS `options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `option_key` varchar(255) NOT NULL,
-  `option_value` text NOT NULL,
-  `date_format` varchar(32) NOT NULL,
-  `tz` varchar(255) NOT NULL,
-  `length_units` enum('cm','in') NOT NULL,
-  `volume_units` enum('oz','ml') NOT NULL,
-  `temp_units` enum('F','C','K') NOT NULL,
+  `option_key` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `option_value` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `options`
+--
+
+INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES
+(1, 'date_format', 'mm/dd/yyyy'),
+(2, 'timezone', 'Asia/Jerusalem'),
+(3, 'temp_units', 'C'),
+(4, 'length_units', 'cm'),
+(5, 'volume_units', 'ml'),
+(6, 'username', 'admin'),
+(7, 'password', 'admin');
 
 -- --------------------------------------------------------
 
@@ -106,6 +115,9 @@ CREATE TABLE IF NOT EXISTS `plant` (
   `strain_ID` varchar(255) NOT NULL,
   `season_ID` varchar(255) NOT NULL,
   `source` varchar(64) NOT NULL,
+  `yield` int(3) NOT NULL,
+  `current_stage` varchar(255) DEFAULT NULL,
+  `current_environment` int(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
@@ -120,9 +132,11 @@ CREATE TABLE IF NOT EXISTS `repellent` (
   `name` varchar(255) NOT NULL,
   `type` enum('organic','chemical','other') NOT NULL,
   `target` varchar(255) NOT NULL,
+  `price` varchar(64) NOT NULL,
+  `purchase_location` varchar(255) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -150,6 +164,7 @@ CREATE TABLE IF NOT EXISTS `season` (
   `end` date NOT NULL,
   `location` varchar(255) NOT NULL,
   `light_hours` int(2) NOT NULL,
+  `total_yield` int(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
@@ -165,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `strain` (
   `type` varchar(255) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
