@@ -16,7 +16,7 @@ class Log(Table):
     environment_name = Col('Environment')
     lux = Col('Lux')
     soil_pH = Col('Soil pH')
-    trim = BoolCol('Trim',  yes_display='Yes', no_display='No')
+    trim = Col('Trim')
     transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')
     notes = Col('Notes')
 

@@ -88,7 +88,7 @@ class LogForm(Form):
     water = BooleanField('Water')
     height = IntegerField('Height')
     span = IntegerField('Span')
-    trim = BooleanField('Trim')
+    trim = SelectField('Trim',choices=[('','None'),('Topping','Topping'),('Fimming','Fimming'),('ICE','ICE'),('Lollipop','Lollipop')])
     lux = IntegerField('Lux')
     soil_pH = IntegerField('Soil pH')
     transplant = BooleanField('Transplant')
@@ -97,3 +97,6 @@ class LogForm(Form):
     nutrient_ID = SelectField('Nutrient',choices=nutrient, coerce=int)
     repellent_ID = SelectField('Repellent',choices=repellent, coerce=int)
     notes = TextAreaField('Notes')
+
+class ApiForm(Form):
+    api_key = TextField('API KEY')

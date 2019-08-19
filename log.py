@@ -70,6 +70,8 @@ def add_print_log_view():
 # Display and process new log
 @app.route('/log/new', methods=['GET','POST'])
 def add_new_log_view():
+	if check_login() is not True:
+		return redirect("/")	
 	icon=None
 	if request.method == 'POST':
 		try:

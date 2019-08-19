@@ -16,6 +16,8 @@ from nutrients import *
 from repellents import *
 from log import *
 
+from api import *
+
 program_name="CannaTrax"
 
 @app.route('/')
@@ -124,4 +126,4 @@ def update_user():
 		#conn.close()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
