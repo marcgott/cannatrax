@@ -53,9 +53,11 @@ def add_print_log_view():
 			printrow['height']= ''+option['length_units']
 			printrow['span']= ''+option['length_units']
 			printrow['transplant']= ''
+			printrow['lux']= ''
+			printrow['soil_pH']= ''
+			printrow['trim']= ''
 			printrow['notes']= ''
 			tablerows.append(printrow)
-		print(tablerows)
 		table = PrintLog(tablerows)
 		table.border = True
 	except Exception as e:

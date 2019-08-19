@@ -14,6 +14,8 @@ class Log(Table):
     nutrient_name = Col('Nutrient')
     repellent_name = Col('Repellent')
     environment_name = Col('Environment')
+    lux = Col('Lux')
+    soil_pH = Col('Soil pH')
     trim = BoolCol('Trim',  yes_display='Yes', no_display='No')
     transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')
     notes = Col('Notes')
@@ -21,12 +23,15 @@ class Log(Table):
 class PrintLog(Table):
     table_id = 'print_log'
     name = Col('Plant Name')
-    picture = Col('Picture')
-    water = Col('Water',td_html_attrs={'class':'printblank'})
-    nutrient = Col('Nutrient')
+    picture = Col('Photo')
+    water = Col('H2O',td_html_attrs={'class':'printblank'})
+    nutrient = Col('Nutr.')
     height = Col('Height',td_html_attrs={'class':'printblank'})
     span = Col('Span',td_html_attrs={'class':'printblank'})
-    transplant = Col('Transplant')
+    transplant = Col('Repot')
+    lux = Col('Lux')
+    soil_pH = Col('pH')
+    trim = Col('Trim')
     notes = Col('Notes',column_html_attrs={'class':'printnotes'})
 
 class Plant(Table):
@@ -69,6 +74,7 @@ class Environment(Table):
     name = Col('Name')
     location = Col('Location')
     light_hours = Col('Light Hours')
+    temperature = Col('Temperature')
     edit = LinkCol('Edit', 'edit_environment', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_environment', url_kwargs=dict(id='id'))
 

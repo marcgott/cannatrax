@@ -13,6 +13,8 @@
   <div class="input log">{{ form.repellent_ID.label }} {{ form.repellent_ID(class_="repellentfield", id="repellent_ID-"+row['id']|escape) }}</div>
   <div class="input log">{{ form.stage.label }} {{ form.stage(class_="stagefield") }}</div>
   <div class="input log">{{ form.trim.label }} {{ form.trim(value=1) }}</div>
+  <div class="input log">{{ form.lux.label }} {{ form.lux }}</div>
+  <div class="input log">{{ form.soil_pH.label }} {{ form.soil_pH }}</div>
   <div class="input log">{{ form.transplant.label }} {{ form.transplant(value=1)}}</div>
   <div class="input log">{{ form.notes.label }} {{ form.notes }}</div>
   <div class="input log submit">{{ form.plant_ID(value=row['id']) }}<input type="submit" value="Submit"></div>

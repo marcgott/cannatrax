@@ -1,4 +1,4 @@
-from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, IntegerField, validators, StringField, SubmitField
+from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, FloatField, IntegerField, validators, StringField, SubmitField
 from pytz import all_timezones
 import pymysql
 from db_config import mysql
@@ -89,6 +89,8 @@ class LogForm(Form):
     height = IntegerField('Height')
     span = IntegerField('Span')
     trim = BooleanField('Trim')
+    lux = IntegerField('Lux')
+    soil_pH = IntegerField('Soil pH')
     transplant = BooleanField('Transplant')
     stage = SelectField('Stage',choices=[('Germination','Germination'),('Seedling','Seedling'),('Vegitation','Vegitation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
     environment_ID = SelectField('Environment',choices=environment, coerce=int)
