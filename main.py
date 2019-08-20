@@ -57,15 +57,18 @@ def show_menu():
 @app.route('/login', methods=['POST'])
 def do_admin_login():
 	option = get_settings();
-	print(generate_password_hash(option['password']))
-	print(check_password_hash(password=request.form['password'], pwhash=option['password']))
-	if request.form['password'] == option['password'] and request.form['username'] == option['username']:
-		session['logged_in'] = True
-		flash('Successful Login', 'info')
-		redirect_url = request.form['redirect'] if request.form['redirect'] is not None else "/"
-	else:
+	print(request.form)
+	try:
+		if request.form['password'] == option['password'] and request.form['username'] == option['username']:
+			session['logged_in'] = True
+			flash('Successful Login', 'info')
+			redirect_url = request.form['redirect'] if "redirect" in request.form !='' else "/"
+	except Exception as e:
+		ptint(e)
 		flash('wrong password!')
-	return redirect(redirect_url)
+	finally:
+		return redirect(redirect_url)
+
 
 @app.route('/logout', methods=['GET','POST'])
 def do_logout():
