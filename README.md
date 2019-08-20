@@ -3,9 +3,32 @@
 Welcome to CannaTrax, a Web application written in Python to help you keep track of your cannabis plants through their growth cycles.
 
 ## Installation
-Clone repo
-Set up database
-Run install.py
+### Clone repo
+The first thing you'll need to do is clone your own repo of CannaTrax to your server.
+
+### Set up database
+CannaTrax uses MySQL for its database backend. You'll need to have access to a MySQL server, and have the following information ready for installation:
+- Database Host
+- Database username
+- Database password
+- Database name
+
+### Install Required Modules
+CannaTrax is written in Python. It requires Python 3.5 or higher to run. There are a number of Python modules that CannaTrax needs in order to run. You need to make sure the following modules are installed and available on your server:
+- flask
+- flask_table
+- matplotlib
+- pymysql
+- pytz
+- numpy
+- seaborn
+- io
+- base64
+you can use `apt-get` or `pip` to install them.
+
+### Start Cannatrax
+
+## Run install.py
 
 ## Setting up CannaTrax
 ### Logging in
