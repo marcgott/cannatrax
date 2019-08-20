@@ -15,4 +15,6 @@ SELECT a.*
             ) b
  WHERE a.plant_ID = b.plant_ID
    AND a.logdate = b.logdate
+
+select plant_ID,logdate,span,height FROM log WHERE (height<>0 OR span<>0) AND plant_ID=18
 """

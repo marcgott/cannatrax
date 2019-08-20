@@ -1,16 +1,18 @@
 {% include 'header.html' %}
-<h2><i class="fas fa-{{icon}}" style="margin-right:.2em"></i>Daily Log</h2>
+<h2><i class="fas fa-{{icon}}" style="margin-right:.2em"></i>Daily Log {{ plant_name }}</h2>
 <p><a href="{{ url_for('.add_new_log_view') }}" class="operation_btn"><i class="fas fa-plus-circle" style="margin-right:.2em"></i>Add Log</a>  <a href="{{ url_for('.add_print_log_view') }}" class="operation_btn"><i class="fas fa-print" style="margin-right:.2em"></i>Print Log</a></p>
+<p>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}
 		<ul class=flashes>
 		{% for message in messages %}
-		  <li class="{{message[0]}}"><i class="fas fa-{{icon}}"></i> {{ message }}</li>
+		  <li class="{{message[0]}}"><i class="fas fa-{{icon}}"></i> {{ message[1] }}</li>
 		{% endfor %}
 		</ul>
 	  {% endif %}
 	{% endwith %}
 </p>
+
 <strong>Last {{total_logs}} Log Entries:</strong>
 {{ table }}
 {% include 'footer.html' %}

@@ -9,6 +9,9 @@
   <div class="input text">
                   {{ form.password.label }} {{ form.password }}</div>
   <div class="input text">
+    {% if referrer != "" %}
+    <input type="hidden" name="redirect" value="{{referrer}}" />
+    {% endif %}
                   <input type="submit" value="Log in" /></div>
   </form>
   </div>

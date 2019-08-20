@@ -44,6 +44,7 @@ class Plant(Table):
     current_stage = Col('Current Stage', show=False)
     current_environment = Col('Current Environment', show=False)
     source = Col('Source', show=False)
+    log = LinkCol('Log', 'show_plant_log', url_kwargs=dict(id='id'))
     details = LinkCol('Details', 'view_plant', url_kwargs=dict(id='id'))
     edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))

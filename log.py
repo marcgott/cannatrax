@@ -71,12 +71,11 @@ def add_print_log_view():
 @app.route('/log/new', methods=['GET','POST'])
 def add_new_log_view():
 	if check_login() is not True:
-		return redirect("/")	
+		return redirect("/")
 	icon=None
 	if request.method == 'POST':
 		try:
 			_water = 1 if 'water' in request.form else 0
-			_trim = 1 if 'trim' in request.form else 0
 			_transplant = 1 if 'transplant' in request.form else 0
 			_plant_ID = request.form['plant_ID']
 			_height = request.form['height']
@@ -85,11 +84,14 @@ def add_new_log_view():
 			_nutrient_ID = request.form['nutrient_ID']
 			_repellent_ID = request.form['repellent_ID']
 			_stage = request.form['stage']
+			_lux = request.form['lux']
+			_soil_pH = request.form['soil_pH']
 			_logdate = request.form['logdate']
+			_trim = request.form['trim']
 			_notes = request.form['notes']
 
-			sql = "INSERT INTO log(plant_ID, water, height, span, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			data = (_plant_ID, _water, _height, _span, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate)
+			sql = "INSERT INTO log(plant_ID, water, height, span, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate, lux, soil_pH ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			data = (_plant_ID, _water, _height, _span, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)

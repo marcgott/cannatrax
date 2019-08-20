@@ -24,7 +24,8 @@ program_name="CannaTrax"
 def show_menu():
 	if not session.get('logged_in'):
 		form = LoginForm(request.form)
-		return render_template('login.html',form=form,program_name=program_name,operation="Log In",is_login=session.get('logged_in'))
+		referrer = request.headers.get("Referer")
+		return render_template('login.html',referrer=referrer,form=form,program_name=program_name,operation="Log In",is_login=session.get('logged_in'))
 	operation="Dashboard"
 	try:
 		countsql = "SELECT (SELECT count(plant.id) FROM `plant`) as 'pc' ,(SELECT count(environment.id) FROM `environment`) as 'ec', (SELECT count(strain.id) FROM `strain`) as 'sc', (SELECT count(season.id) FROM `season`) as 'ac', (SELECT count(repellent.id) FROM `repellent`) as 'rc', (SELECT count(nutrient.id) FROM `nutrient`) as 'nc', (SELECT max(log.ts) FROM `log`) as 'lastlog'"
@@ -61,9 +62,10 @@ def do_admin_login():
 	if request.form['password'] == option['password'] and request.form['username'] == option['username']:
 		session['logged_in'] = True
 		flash('Successful Login', 'info')
+		redirect_url = request.form['redirect'] if request.form['redirect'] is not None else "/"
 	else:
 		flash('wrong password!')
-	return redirect("/")
+	return redirect(redirect_url)
 
 @app.route('/logout', methods=['GET','POST'])
 def do_logout():

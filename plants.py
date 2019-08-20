@@ -8,7 +8,7 @@ from flask import flash, render_template, request, redirect, session
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
 from forms import *
-
+from cannatrax import get_measurement_plot
 operation="Plants"
 icon="leaf"
 
@@ -26,6 +26,7 @@ def show_plants():
 		table = Plant(rows)
 		table.border = True
 		total_plants = len(rows)
+
 		return render_template('main.html', table=table, total_count=total_plants, add_operation_url='.add_new_plant_view',icon=icon,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
@@ -145,9 +146,34 @@ def view_plant(id):
 		cursor.execute("SELECT MAX( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
 		rows = cursor.fetchall()
+		cursor.execute("SELECT plant_ID,logdate,span,height,trim FROM log WHERE (height<>0 OR span<>0 OR trim<>'') AND plant_ID=%s", (id,))
+		conn.commit()
+		chart_rows = cursor.fetchall()
+		growth_chart = get_measurement_plot(chart_rows,row['name'])
 	except Exception as e:
 		print(e)
 	finally:
 		cursor.close()
 		conn.close()
-	return render_template("plants.html",icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
+
+	return render_template("plants.html",growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
+
+@app.route('/plant/logs/<int:id>')
+def show_plant_log(id):
+	if check_login() is not True:
+		return redirect("/")
+	try:
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID WHERE plant_ID=%s ORDER BY logdate DESC, ts DESC LIMIT 50",(id))
+		rows = cursor.fetchall()
+		table = Log(rows)
+		table.border = True
+		total_logs = len(rows)
+		#icon="clipboard-check"
+		return render_template('logs.html', table=table, icon=icon, plant_name=rows[0]['plant_name'], total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
+	except Exception as e:
+		print(e)
+	finally:
+		cursor.close()
+		conn.close()

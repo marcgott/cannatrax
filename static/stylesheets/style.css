@@ -34,4 +34,7 @@ table.main.chart td {padding:0.4em}
 .printblank{width:7%;text-align:right;font-size:0.6em;vertical-align: bottom;}
 .printnotes{width:15%;}
 
+#plant_details {display:inline-block;width:20%;vertical-align: top;margin-top:2em;}
+#plant_growth_chart {display:inline-block;width:70%;vertical-align: top;margin-top:2em;}
+#plant_growth_chart img {width:50%;}
 #footer {margin-top:3em}
