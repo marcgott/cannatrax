@@ -20,6 +20,12 @@ def get_db_list(**kwargs):
     except Exception as e:
         print(e)
 
+class InstallForm(Form):
+    dbhost = TextField("Database Host")
+    dbuname = TextField("Database Username")
+    dbpass = TextField("Database Password")
+    dbname = TextField("Database Name")
+
 class LoginForm(Form):
     username = TextField("Username")
     password = PasswordField("Password")
@@ -39,14 +45,14 @@ class SettingsForm(Form):
 
 class PlantForm(Form):
     strains = get_db_list(table='strain',idval = True,idtxt = "Unknown")
-    seasons = get_db_list(table='season',idval = True,idtxt = "Unknown")
+    cycles = get_db_list(table='cycle',idval = True,idtxt = "Unknown")
     name = TextField('Name:', validators=[validators.required()])
     gender = SelectField('Gender:',choices=[('Unknown','Unknown'),('Male','Male'),('Female','Female'),('Hermaphrodite','Hermaphrodite')])
     strain = SelectField('Strain:',choices=strains)
-    season = SelectField('Season:',choices=seasons)
+    cycle = SelectField('Cycle:',choices=cycles)
     source = SelectField('Source:',choices=[('seed','Seed'),('clone','Clone'),('other','Other')])
 
-class SeasonForm(Form):
+class CycleForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     start = DateField('Start:', validators=[validators.required()])
     end = DateField('End:')
@@ -92,7 +98,7 @@ class LogForm(Form):
     lux = IntegerField('Lux')
     soil_pH = IntegerField('Soil pH')
     transplant = BooleanField('Transplant')
-    stage = SelectField('Stage',choices=[('Germination','Germination'),('Seedling','Seedling'),('Vegitation','Vegitation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
+    stage = SelectField('Stage',choices=[('Germination','Germination'),('Seedling','Seedling'),('Vegetation','Vegetation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
     environment_ID = SelectField('Environment',choices=environment, coerce=int)
     nutrient_ID = SelectField('Nutrient',choices=nutrient, coerce=int)
     repellent_ID = SelectField('Repellent',choices=repellent, coerce=int)

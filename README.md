@@ -34,7 +34,7 @@ you can use `apt-get` or `pip` to install them.
 ### Logging in
 ### Dashboard
 ### Settings
-### Add Your Season
+### Add Your Cycle
 ### Create an Environment
 ### Add Your Plants
 ### Add Strains

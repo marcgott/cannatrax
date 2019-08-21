@@ -2,16 +2,20 @@ import pymysql
 from app import app
 import matplotlib
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from matplotlib.colors import *
+from matplotlib.dates import DateFormatter
 import numpy as np
 import seaborn as sns
 import base64
+import calendar
+from datetime import date,datetime
 from io import BytesIO
 from db_config import mysql
 from flask import session, redirect
 from forms import LoginForm
 
-#matplotlib.style.use("seaborn-whitegrid")
-sns.set_style("whitegrid")
+#sns.set_style("whitegrid")
 
 def check_login():
     if not session.get('logged_in'):
@@ -19,7 +23,7 @@ def check_login():
     return True
 
 def get_icons(operation=None):
-    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','seasons':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegitation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast'}
+    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast'}
     return icons
 def get_settings():
 	try:
@@ -43,9 +47,8 @@ def get_measurement_plot(rows,plant_name):
     heights= []
     spans = []
     trims = []
-    last_span = None
-    last_height = None
-    print(rows)
+    last_span = 0
+    last_height = 0
     for row in rows:
         labels.append(row['logdate'])
         if row['height'] >0:
@@ -70,23 +73,77 @@ def get_measurement_plot(rows,plant_name):
     d2 = ax.plot_date(labels,spans,fmt='o', tz=None, xdate=True, ydate=False,linestyle='-',label="Span")
 
 
-    trim_color = {'Topping':'#993333','Lollipop':'#339933','Fimming':'#333399','ICE':'#666666'}
-
-    for trim in trims:
+    for i,trim in enumerate(trims):
         if trim['type'] != '':
-            print(trim_color[trim['type']])
-            plt.axvline(trim['date'],label=trim['type'],color=trim_color[trim['type']])
+            color = "".join(['C',str(i)])
+            plt.axvline(trim['date'],label=trim['type'],color=color)
 
+    labels.append(date.today())
     ax.set_ylabel(option['length_units'])
     ax.set_xlim([min(labels),max(labels)])
+    ax.set_xticks(labels)
+    ax.set_xticklabels(labels)
+    ax.grid(True, linestyle='-')
+    ax.tick_params( width=3, grid_color='g', grid_alpha=0.5)
     ax.set_ylim([0,ylimit])
     ax.set_title('Growth Chart for '+plant_name)
-
+    formatter = DateFormatter('%m/%d/%y')
+    for tick in ax.xaxis.get_majorticklabels():
+        tick.set_horizontalalignment("right")
+    ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_tick_params(rotation=30, labelsize=10)
     ax.legend()
     fig.tight_layout()
 
     figfile = BytesIO()
     fig.savefig(figfile, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+
+    #figdata_png = base64.b64encode(figfile.read())
+    figdata_png = base64.b64encode(figfile.getvalue())
+    return figdata_png
+
+def get_water_calendar(dates,plant_name):
+    sns.set_style("whitegrid")
+    plt.figure(figsize=(9, 3))
+    # non days are grayed
+    ax = plt.gca().axes
+    ax.add_patch(Rectangle((29, 2), width=.8, height=.8,
+                           color='gray', alpha=.3))
+    ax.add_patch(Rectangle((30, 2), width=.8, height=.8,
+                           color='gray', alpha=.5))
+    ax.add_patch(Rectangle((31, 2), width=.8, height=.8,
+                           color='gray', alpha=.5))
+    ax.add_patch(Rectangle((31, 4), width=.8, height=.8,
+                           color='gray', alpha=.5))
+    ax.add_patch(Rectangle((31, 6), width=.8, height=.8,
+                           color='gray', alpha=.5))
+    ax.add_patch(Rectangle((31, 9), width=.8, height=.8,
+                           color='gray', alpha=.5))
+    ax.add_patch(Rectangle((31, 11), width=.8, height=.8,
+                           color='gray', alpha=.5))
+
+    waterdays = []
+    watermonths = []
+    for dt in dates:
+        waterdays.append(dt['d'])
+        watermonths.append(dt['m'])
+    for d, m in zip(waterdays,watermonths):
+        ax.add_patch(Rectangle((d, m),
+                               width=.8, height=.8, color='C0'))
+    plt.yticks(np.arange(1, 13)+.5, list(calendar.month_abbr)[1:])
+    plt.xticks(np.arange(1,32)+.5, np.arange(1,32))
+    plt.xlim(1, 32)
+    plt.ylim(1, 13)
+    ax.set_title('Water Chart for '+plant_name)
+    plt.gca().invert_yaxis()
+    # remove borders and ticks
+    for spine in plt.gca().spines.values():
+        spine.set_visible(False)
+    plt.tick_params(top=False, bottom=False, left=False, right=False)
+    #plt.show()
+    figfile = BytesIO()
+    plt.savefig(figfile, format='png')
     figfile.seek(0)  # rewind to beginning of file
 
     #figdata_png = base64.b64encode(figfile.read())

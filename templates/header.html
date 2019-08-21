@@ -3,7 +3,7 @@
     <head>
       <title>Cannatrax - {{ title_verb }} {{ operation }}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      
+
       <link href="https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap" rel="stylesheet" />
       <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}" />
@@ -12,6 +12,9 @@
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
       <script src="{{ url_for('static', filename='scripts/gardentrax.js') }}" /></script>
       <script src="{{ url_for('static', filename='scripts/fontawesome5.js') }}" /></script>
+      {% if is_install==True %}
+      <script src="{{ url_for('static', filename='scripts/install.js') }}" /></script>
+      {% endif %}
     </head>
     <body>
       {% if is_login == True %}
@@ -25,7 +28,7 @@
           <li class="menu-item"><a href="{{ url_for('.show_nutrients') }}">Nutrients</a></li>
           <li class="menu-item"><a href="{{ url_for('.show_repellents') }}">Repellents</a></li>
           <li class="menu-item"><a href="{{ url_for('.show_strains') }}">Strains</a></li>
-          <li class="menu-item"><a href="{{ url_for('.show_seasons') }}">Seasons</a></li>
+          <li class="menu-item"><a href="{{ url_for('.show_cycles') }}">Cycles</a></li>
 <li class="menu-item"><a href="{{ url_for('.show_plants') }}">Reports</a></li>
           <li class="menu-item"><a href="{{ url_for('.show_settings') }}">Settings</a></li>
           <li class="menu-item"><a href="{{ url_for('.do_logout') }}">Log Out</a></li>

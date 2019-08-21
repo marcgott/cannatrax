@@ -8,7 +8,7 @@ from pytz import all_timezones
 from forms import *
 from tables import *
 from plants import *
-from seasons import *
+from cycles import *
 from strains import *
 from environments import *
 from nutrients import *
@@ -72,13 +72,12 @@ def do_api_get_plant_view(id):
 		try:
 			conn = mysql.connect()
 			cursor = conn.cursor(pymysql.cursors.DictCursor)
-			#season_ID,strain_ID,current_environment
+			#cycle_ID,strain_ID,current_environment
 			cursor.execute("SELECT * FROM plant WHERE id=%s",(id))
 			row = cursor.fetchone()
 			#print(rows)
 			resp = jsonify({'results':row})
 			resp.status_code = 200
-			print(row)
 			return resp
 		except Exception as e:
 			print(e)

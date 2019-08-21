@@ -21,7 +21,7 @@ def show_plants():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, season.name as season_name,environment.name as current_environment, plant.source, plant.current_stage FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN season ON season.id=plant.season_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
 		rows = cursor.fetchall()
 		table = Plant(rows)
 		table.border = True
@@ -46,11 +46,11 @@ def add_new_plant_view():
 			_name = request.form['name']
 			_gender = request.form['gender']
 			_strain_ID = request.form['strain']
-			_season_ID = request.form['season']
+			_cycle_ID = request.form['cycle']
 			_source = request.form['source']
 
-			sql = "INSERT INTO plant(name,gender,strain_ID,season_ID,source) VALUES(%s, %s, %s, %s, %s)"
-			data = (_name, _gender, _strain_ID, _season_ID, _source)
+			sql = "INSERT INTO plant(name,gender,strain_ID,cycle_ID,source) VALUES(%s, %s, %s, %s, %s)"
+			data = (_name, _gender, _strain_ID, _cycle_ID, _source)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
@@ -78,12 +78,12 @@ def edit_plant(id):
 		_name = request.form['name']
 		_gender = request.form['gender']
 		_strain = request.form['strain']
-		_season = request.form['season']
+		_cycle = request.form['cycle']
 		_source = request.form['source']
 		_id = request.form['id']
 
-		sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, season_ID=%s, source=%s WHERE id=%s"
-		data = (_name, _gender, _strain, _season, _source, _id)
+		sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s WHERE id=%s"
+		data = (_name, _gender, _strain, _cycle, _source, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
@@ -103,7 +103,7 @@ def edit_plant(id):
 			form.gender.default=row['gender']
 			form.source.default=row['source']
 			form.strain.default=row['strain_ID']
-			form.season.default=row['season_ID']
+			form.cycle.default=row['cycle_ID']
 			form.process()
 		else:
 			return 'Error loading #{id}'.format(id=id)
@@ -140,23 +140,28 @@ def view_plant(id):
 		option = get_settings()
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, season.name as season_name, plant.source, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN season ON season.id=plant.season_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
 		cursor.execute("SELECT MAX( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
 		rows = cursor.fetchall()
-		cursor.execute("SELECT plant_ID,logdate,span,height,trim FROM log WHERE (height<>0 OR span<>0 OR trim<>'') AND plant_ID=%s", (id,))
+		cursor.execute("SELECT logdate,span,height,trim FROM log WHERE (height<>0 OR span<>0 OR trim<>'') AND plant_ID=%s ORDER BY logdate ASC", (id,))
 		conn.commit()
 		chart_rows = cursor.fetchall()
+		cursor.execute("SELECT DAY(logdate) as d, MONTH(logdate) as m FROM log WHERE Water=1 AND plant_ID=%s ORDER BY logdate ASC", (id,))
+		conn.commit()
+		water_dates = cursor.fetchall()
+
 		growth_chart = get_measurement_plot(chart_rows,row['name'])
+		water_chart = get_water_calendar(water_dates,row['name'])
 	except Exception as e:
 		print(e)
 	finally:
 		cursor.close()
 		conn.close()
 
-	return render_template("plants.html",growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
+	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
 
 @app.route('/plant/logs/<int:id>')
 def show_plant_log(id):

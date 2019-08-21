@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 18, 2019 at 04:17 PM
+-- Generation Time: Aug 21, 2019 at 08:19 PM
 -- Server version: 5.5.62-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.29
 
@@ -23,6 +23,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cycle`
+--
+
+CREATE TABLE IF NOT EXISTS `cycle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `start` date NOT NULL,
+  `end` date NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `light_hours` int(2) NOT NULL,
+  `total_yield` int(4) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `environment`
 --
 
@@ -31,6 +48,14 @@ CREATE TABLE IF NOT EXISTS `environment` (
   `name` varchar(255) NOT NULL,
   `location` enum('indoor','outdoor') NOT NULL,
   `light_hours` int(3) NOT NULL,
+  `temperature` int(3) NOT NULL,
+  `humidity` int(11) NOT NULL,
+  `light_source` varchar(255) NOT NULL,
+  `lumens` int(5) NOT NULL,
+  `wattage` varchar(255) NOT NULL,
+  `grow_area` varchar(64) NOT NULL,
+  `containment` varchar(255) NOT NULL,
+  `max_plants` int(2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
@@ -48,16 +73,18 @@ CREATE TABLE IF NOT EXISTS `log` (
   `repellent_ID` int(11) DEFAULT NULL,
   `stage` varchar(64) DEFAULT NULL,
   `water` tinyint(1) DEFAULT NULL,
-  `trim` tinyint(1) DEFAULT NULL,
+  `trim` varchar(32) DEFAULT NULL,
   `height` decimal(3,1) DEFAULT NULL,
   `span` decimal(3,1) DEFAULT NULL,
+  `lux` int(5) NOT NULL,
+  `soil_pH` decimal(2,1) NOT NULL DEFAULT '7.0',
   `transplant` tinyint(1) DEFAULT NULL,
   `photo` blob,
   `notes` text CHARACTER SET utf8,
   `logdate` date DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=130 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=183 ;
 
 -- --------------------------------------------------------
 
@@ -89,19 +116,6 @@ CREATE TABLE IF NOT EXISTS `options` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
---
--- Dumping data for table `options`
---
-
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES
-(1, 'date_format', 'mm/dd/yyyy'),
-(2, 'timezone', 'Asia/Jerusalem'),
-(3, 'temp_units', 'C'),
-(4, 'length_units', 'cm'),
-(5, 'volume_units', 'ml'),
-(6, 'username', 'admin'),
-(7, 'password', 'admin');
-
 -- --------------------------------------------------------
 
 --
@@ -113,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `plant` (
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `gender` varchar(32) NOT NULL,
   `strain_ID` varchar(255) NOT NULL,
-  `season_ID` varchar(255) NOT NULL,
+  `cycle_ID` varchar(255) NOT NULL,
   `source` varchar(64) NOT NULL,
   `yield` int(3) NOT NULL,
   `current_stage` varchar(255) DEFAULT NULL,
@@ -150,23 +164,6 @@ CREATE TABLE IF NOT EXISTS `report` (
   `data` mediumtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `season`
---
-
-CREATE TABLE IF NOT EXISTS `season` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `start` date NOT NULL,
-  `end` date NOT NULL,
-  `location` varchar(255) NOT NULL,
-  `light_hours` int(2) NOT NULL,
-  `total_yield` int(4) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 

@@ -9,16 +9,22 @@ from pytz import all_timezones
 from forms import *
 from tables import *
 from plants import *
-from seasons import *
+from cycles import *
 from strains import *
 from environments import *
 from nutrients import *
 from repellents import *
 from log import *
-
 from api import *
 
-program_name="CannaTrax"
+app.program_name="CannaTrax"
+
+try:
+	from db_config import mysql
+except Exception as e:
+	print(e)
+
+from install import *
 
 @app.route('/')
 def show_menu():
@@ -28,7 +34,7 @@ def show_menu():
 		return render_template('login.html',referrer=referrer,form=form,program_name=program_name,operation="Log In",is_login=session.get('logged_in'))
 	operation="Dashboard"
 	try:
-		countsql = "SELECT (SELECT count(plant.id) FROM `plant`) as 'pc' ,(SELECT count(environment.id) FROM `environment`) as 'ec', (SELECT count(strain.id) FROM `strain`) as 'sc', (SELECT count(season.id) FROM `season`) as 'ac', (SELECT count(repellent.id) FROM `repellent`) as 'rc', (SELECT count(nutrient.id) FROM `nutrient`) as 'nc', (SELECT max(log.ts) FROM `log`) as 'lastlog'"
+		countsql = "SELECT (SELECT count(plant.id) FROM `plant`) as 'pc' ,(SELECT count(environment.id) FROM `environment`) as 'ec', (SELECT count(strain.id) FROM `strain`) as 'sc', (SELECT count(cycle.id) FROM `cycle`) as 'ac', (SELECT count(repellent.id) FROM `repellent`) as 'rc', (SELECT count(nutrient.id) FROM `nutrient`) as 'nc', (SELECT max(log.ts) FROM `log`) as 'lastlog'"
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute(countsql)
@@ -57,7 +63,6 @@ def show_menu():
 @app.route('/login', methods=['POST'])
 def do_admin_login():
 	option = get_settings();
-	print(request.form)
 	try:
 		if request.form['password'] == option['password'] and request.form['username'] == option['username']:
 			session['logged_in'] = True

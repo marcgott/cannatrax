@@ -131,12 +131,12 @@ def edit_log(id):
 		_name = request.form['name']
 		_gender = request.form['gender']
 		_strain = request.form['strain']
-		_season = request.form['season']
+		_cycle = request.form['cycle']
 		_source = request.form['source']
 		_id = request.form['id']
 
-		sql = "UPDATE log SET name=%s, gender=%s, strain_ID=%s, season_ID=%s, source=%s WHERE id=%s"
-		data = (_name, _gender, _strain, _season, _source, _id)
+		sql = "UPDATE log SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s WHERE id=%s"
+		data = (_name, _gender, _strain, _cycle, _source, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
@@ -156,7 +156,7 @@ def edit_log(id):
 			form.gender.default=row['gender']
 			form.source.default=row['source']
 			form.strain.default=row['strain_ID']
-			form.season.default=row['season_ID']
+			form.cycle.default=row['cycle_ID']
 
 			form.process()
 		else:

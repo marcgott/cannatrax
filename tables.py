@@ -40,7 +40,7 @@ class Plant(Table):
     name = Col('Name')
     gender = Col('Gender')
     strain_name = Col('Strain')
-    season_name = Col('Season', show=False)
+    cycle_name = Col('Cycle', show=False)
     current_stage = Col('Current Stage', show=False)
     current_environment = Col('Current Environment', show=False)
     source = Col('Source', show=False)
@@ -49,16 +49,16 @@ class Plant(Table):
     edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
 
-class Season(Table):
-    classes = ['main','chart','season']
+class Cycle(Table):
+    classes = ['main','chart','cycle']
     id = Col('id', show=False)
     name = Col('Name')
     start = Col('Start')
     end = Col('End')
     location = Col('Location')
     light_hours = Col('Light Hours')
-    edit = LinkCol('Edit', 'edit_season', url_kwargs=dict(id='id'))
-    delete = LinkCol('Delete', 'delete_season', url_kwargs=dict(id='id'))
+    edit = LinkCol('Edit', 'edit_cycle', url_kwargs=dict(id='id'))
+    delete = LinkCol('Delete', 'delete_cycle', url_kwargs=dict(id='id'))
 
 class Strain(Table):
     classes = ['main','chart','strain']
@@ -110,7 +110,7 @@ class Statistics(Table):
     pc = Col('Plant Count')
     ec = Col('Environment Count')
     sc = Col('Strain Count')
-    ac = Col('Season Count')
+    ac = Col('Cycle Count')
     rc = Col('Repellent Count')
     nc = Col('Nutrient Count')
     lastlog = DatetimeCol('Last Log')
