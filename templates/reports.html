@@ -1,0 +1,14 @@
+{% include 'header.html' %}
+<h2><i class="fas fa-{{icon[operation|lower]}}" style="margin-right:.2em"></i>Reports </h2>
+
+<div id="plant_details">
+	<p><a href="#" id="height_report" class="reportlink"><i class="fas fa-{{icon['height']}}" style="margin-right:.2em"></i>Plant Height Report</p>
+</div>
+<div id="charts">
+<div id="chart_height_report" class="report chart">
+	<img src="data:image/png;base64,{{ height_comparison }}"\>
+</div>
+</div>
+
+
+{% include 'footer.html' %}

@@ -36,6 +36,8 @@ def show_environments():
 # Display and process new environment
 @app.route('/environment/new', methods=['GET','POST'])
 def add_new_environment_view():
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == 'POST':
 		try:
@@ -65,6 +67,8 @@ def add_new_environment_view():
 
 @app.route('/environment/edit/<int:id>', methods=['POST','GET'])
 def edit_environment(id):
+	if check_login() is not True:
+		return redirect("/")
 	icon=None
 	if request.method == "POST":
 		_name = request.form['name']

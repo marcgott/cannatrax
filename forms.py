@@ -38,6 +38,8 @@ class SettingsForm(Form):
     username = TextField('Username:')
     password = TextField('Password:')
     timezone = SelectField('Timezone:',choices=timezone_choices)
+    latitude = TextField('Latitude:')
+    longitude = TextField('Longitude:')
     temp_units = SelectField('Temperature:', choices=[('C','Celsius'),('F','Farenheit'),('K','Kelvin')])
     length_units = SelectField('Length:',choices=[('cm','Centimeters'),('in','Inches')])
     volume_units = SelectField('Volume:',choices=[('ml','Mililiters'),('oz','Ounces')])
@@ -68,6 +70,7 @@ class EnvironmentForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     location = SelectField('Location:',choices=[('indoor','Indoor'),('outdoor','Outdoor')])
     light_hours = TextField('Light Hours:')
+    temperature = TextField('Temperature:')
 
 class NutrientForm(Form):
     name = TextField('Name:', validators=[validators.required()])
@@ -94,6 +97,7 @@ class LogForm(Form):
     water = BooleanField('Water')
     height = IntegerField('Height')
     span = IntegerField('Span')
+    nodes = IntegerField('Nodes')
     trim = SelectField('Trim',choices=[('','None'),('Topping','Topping'),('Fimming','Fimming'),('ICE','ICE'),('Lollipop','Lollipop')])
     lux = IntegerField('Lux')
     soil_pH = IntegerField('Soil pH')

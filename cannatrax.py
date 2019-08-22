@@ -9,11 +9,11 @@ import numpy as np
 import seaborn as sns
 import base64
 import calendar
+import requests
 from datetime import date,datetime
 from io import BytesIO
 from db_config import mysql
-from flask import session, redirect
-from forms import LoginForm
+from flask import session, redirect, render_template
 
 #sns.set_style("whitegrid")
 
@@ -39,6 +39,16 @@ def get_settings():
 		return options
 	except Exception as e:
 		print(e)
+
+def get_daystats(dt=None):
+    option=get_settings()
+
+    daydate = date.today()
+    print(daydate)
+    req = 'https://api.sunrise-sunset.org/json?lat=%s&lng=%s&date=%s' % (option['latitude'],option['longitude'],daydate)
+    res = requests.get(req)
+    #print(res.json)
+    return res.text
 
 def get_measurement_plot(rows,plant_name):
     option=get_settings()
@@ -144,6 +154,42 @@ def get_water_calendar(dates,plant_name):
     #plt.show()
     figfile = BytesIO()
     plt.savefig(figfile, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+
+    #figdata_png = base64.b64encode(figfile.read())
+    figdata_png = base64.b64encode(figfile.getvalue())
+    return figdata_png
+
+def get_height_comparison(data):
+    option=get_settings()
+    labels = []
+    heights= []
+
+    for row in data:
+        labels.append(row['name'])
+        heights.append(float(row['height']))
+
+    fig, ax = plt.subplots()
+    ylimit = max(heights) + 5
+
+    d1 = ax.bar(labels,heights,label="Height")
+    plt.axhline(np.average(heights),label="Average",color="r")
+
+    ax.set_ylabel(option['length_units'])
+    ax.set_xticks(labels)
+    ax.set_xticklabels(labels)
+    ax.tick_params(width=3)
+    ax.set_ylim([0,ylimit])
+    ax.set_title('Average Plant Height')
+    for tick in ax.xaxis.get_majorticklabels():
+        tick.set_horizontalalignment("right")
+
+    ax.xaxis.set_tick_params(rotation=30, labelsize=8)
+    ax.legend(loc='upper left')
+    #fig.tight_layout()
+
+    figfile = BytesIO()
+    fig.savefig(figfile, format='png')
     figfile.seek(0)  # rewind to beginning of file
 
     #figdata_png = base64.b64encode(figfile.read())

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 21, 2019 at 08:19 PM
+-- Generation Time: Aug 22, 2019 at 09:36 PM
 -- Server version: 5.5.62-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.29
 
@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `trim` varchar(32) DEFAULT NULL,
   `height` decimal(3,1) DEFAULT NULL,
   `span` decimal(3,1) DEFAULT NULL,
+  `nodes` int(2) NOT NULL,
   `lux` int(5) NOT NULL,
   `soil_pH` decimal(2,1) NOT NULL DEFAULT '7.0',
   `transplant` tinyint(1) DEFAULT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `logdate` date DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=183 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=204 ;
 
 -- --------------------------------------------------------
 
@@ -114,7 +115,18 @@ CREATE TABLE IF NOT EXISTS `options` (
   `option_key` varchar(255) CHARACTER SET utf8 NOT NULL,
   `option_value` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES
+(1, 'date_format', 'mm/dd/yyyy'),
+(2, 'timezone', 'Asia/Jerusalem'),
+(3, 'temp_units', 'C'),
+(4, 'length_units', 'cm'),
+(5, 'volume_units', 'ml'),
+(6, 'username', 'admin'),
+(7, 'password', 'admin'),
+(8, 'latitude', '31.0'),
+(9, 'longitude', '35.0');
 
 -- --------------------------------------------------------
 
@@ -132,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `plant` (
   `yield` int(3) NOT NULL,
   `current_stage` varchar(255) DEFAULT NULL,
   `current_environment` int(4) NOT NULL,
+  `current_nodes` int(2) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 

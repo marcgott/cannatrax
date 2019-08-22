@@ -13,6 +13,9 @@
 </p>
 <h3>General Statistics</h3>
 {{ table }}
+<h3>Daytime Information for {{settings.latitude}}, {{settings.longitude}}</h3>
+Today's Daylight Hours: {{day.day_length}}
+
 <h3>Settings</h3>
 {{ settings_table }}
 {% include 'footer.html' %}

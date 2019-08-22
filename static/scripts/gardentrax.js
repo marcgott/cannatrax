@@ -34,4 +34,9 @@ $(document).ready(function() {
             $('#global_stage').on('change',function(){
               $('.stagefield').val($(this).val());
             });
-         });
+
+    $(".reportlink").click(function(){
+      $(".report.chart").hide()
+      $("#chart_"+$(this).attr('id')).show()
+    })
+});

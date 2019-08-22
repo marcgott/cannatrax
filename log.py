@@ -52,6 +52,7 @@ def add_print_log_view():
 			printrow['nutrient']= ''
 			printrow['height']= ''+option['length_units']
 			printrow['span']= ''+option['length_units']
+			printrow['nodes']= ''
 			printrow['transplant']= ''
 			printrow['lux']= ''
 			printrow['soil_pH']= ''
@@ -80,6 +81,7 @@ def add_new_log_view():
 			_plant_ID = request.form['plant_ID']
 			_height = request.form['height']
 			_span = request.form['span']
+			_nodes = request.form['nodes']
 			_environment_ID = request.form['environment_ID']
 			_nutrient_ID = request.form['nutrient_ID']
 			_repellent_ID = request.form['repellent_ID']
@@ -90,15 +92,15 @@ def add_new_log_view():
 			_trim = request.form['trim']
 			_notes = request.form['notes']
 
-			sql = "INSERT INTO log(plant_ID, water, height, span, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate, lux, soil_pH ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			data = (_plant_ID, _water, _height, _span, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH)
+			sql = "INSERT INTO log(plant_ID, water, height, span, nodes, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate, lux, soil_pH ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
 			conn.commit()
 
-			sql = "UPDATE plant set current_stage=%s , current_environment=%s WHERE id=%s"
-			data = (_stage,_environment_ID, _plant_ID)
+			sql = "UPDATE plant set current_stage=%s , current_environment=%s, current_nodes=%s WHERE id=%s"
+			data = (_stage,_environment_ID, _nodes, _plant_ID)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)

@@ -6,6 +6,7 @@ from db_config import mysql
 from werkzeug import generate_password_hash, check_password_hash
 from flask import flash, render_template, request, redirect,session, abort
 from pytz import all_timezones
+import json
 from forms import *
 from tables import *
 from plants import *
@@ -14,6 +15,7 @@ from strains import *
 from environments import *
 from nutrients import *
 from repellents import *
+from reports import *
 from log import *
 from api import *
 
@@ -52,8 +54,9 @@ def show_menu():
 			settings[row['option_key']] = row['option_value']
 		settings_list.append(settings)
 		settings_table = Settings(settings_list)
+		day = json.loads(get_daystats())
 		icon="tachometer-alt"
-		return render_template('dashboard.html', icon=icon, table=table, settings_table=settings_table,operation=operation,is_login=session.get('logged_in'))
+		return render_template('dashboard.html', day=day['results'], icon=icon, table=table, settings_table=settings_table,settings=settings,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -72,7 +75,7 @@ def do_admin_login():
 		ptint(e)
 		flash('wrong password!')
 	finally:
-		return redirect(redirect_url)
+		return redirect("/")
 
 
 @app.route('/logout', methods=['GET','POST'])

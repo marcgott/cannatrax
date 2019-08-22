@@ -45,6 +45,8 @@ table.main.chart td {padding:0.4em}
 #plant_growth_chart img {width:80%;}
 #footer {margin-top:3em}
 
+#charts {display:inline-block}
+.report.chart{display:none}
 
 @media only screen and (max-width: 400px) {
   #login{max-width:90%;left:5%}
