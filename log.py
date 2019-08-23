@@ -18,14 +18,22 @@ def show_logs():
 	if check_login() is not True:
 		return redirect("/")
 	try:
+		global app
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID ORDER BY logdate DESC, ts DESC LIMIT 40")
 		rows = cursor.fetchall()
-		table = Log(rows)
+		#get_settings()
+		table = PlantLog(rows)
 		table.border = True
+		if isinstance( app.settings["allow_plantlog_edit"],(bool) ):
+			table.edit.show=True
+			table.delete.show=True
+		else:
+			table.edit.show=False
+			table.delete.show=False
+
 		total_logs = len(rows)
-		#icon="clipboard-check"
 		return render_template('logs.html', table=table, icon=icon, total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
@@ -124,7 +132,7 @@ def add_new_log_view():
 	title_verb = "Add"
 	icon="clipboard-check"
 	icons = get_icons()
-	return render_template('operation_form.html', formpage='add_log.html', title_verb=title_verb, form=form, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
+	return render_template('operation_form.html', formpage='add_plantlog.html', title_verb=title_verb, form=form, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/log/edit/<int:id>', methods=['POST','GET'])
 def edit_log(id):
@@ -154,18 +162,13 @@ def edit_log(id):
 
 		if row:
 			form = LogForm(request.form)
-			form.name.default=row['name']
-			form.gender.default=row['gender']
-			form.source.default=row['source']
-			form.strain.default=row['strain_ID']
-			form.cycle.default=row['cycle_ID']
-
 			form.process()
 		else:
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
 		icon="clipboard-check"
-		return render_template('operation_form.html', formpage='add_log.html', title_verb=title_verb, icon=icon, form=form, row=row, rowid=row['id'],operation=operation,is_login=session.get('logged_in'))
+		icons = get_icons()
+		return render_template('operation_form.html', formpage='add_plantlog.html', title_verb=title_verb, icon=icon, icons=icons, form=form, row=row, rowid=row['id'],operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

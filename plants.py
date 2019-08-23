@@ -172,7 +172,7 @@ def show_plant_log(id):
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID WHERE plant_ID=%s ORDER BY logdate DESC, ts DESC LIMIT 50",(id))
 		rows = cursor.fetchall()
-		table = Log(rows)
+		table = PlantLog(rows)
 		table.border = True
 		total_logs = len(rows)
 		#icon="clipboard-check"

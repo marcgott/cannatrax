@@ -20,7 +20,7 @@ from log import *
 from api import *
 
 app.program_name="CannaTrax"
-
+app.settings = get_settings()
 try:
 	from db_config import mysql
 except Exception as e:
@@ -56,7 +56,7 @@ def show_menu():
 		settings_table = Settings(settings_list)
 		day = json.loads(get_daystats())
 		icon="tachometer-alt"
-		return render_template('dashboard.html', day=day['results'], icon=icon, table=table, settings_table=settings_table,settings=settings,operation=operation,is_login=session.get('logged_in'))
+		return render_template('dashboard.html', day=day['results'], icon=icon, table=table, program_name=app.program_name, settings_table=settings_table,settings=settings,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
@@ -100,7 +100,6 @@ def show_settings():
 				value = row['option_value']
 				opt = getattr(form,key)
 				setattr(opt,'default',value)
-				#form.row['option_key'].default = row['option_value']
 			form.process()
 		icon="bars"
 		return render_template('operation_form.html', formpage='settings.html', icon=icon,form=form,operation=operation,is_login=session.get('logged_in'))
@@ -109,6 +108,7 @@ def show_settings():
 
 @app.route('/settings/update', methods=['POST'])
 def update_user():
+	global app
 	try:
 		_username = request.form['username']
 		_password = request.form['password']
@@ -117,15 +117,18 @@ def update_user():
 		_temp_units = request.form['temp_units']
 		_length_units = request.form['length_units']
 		_volume_units = request.form['volume_units']
+		_allow_plantlog_edit = "True" if 'allow_plantlog_edit' in request.form else ""
+		_allow_envlog_edit = "True" if 'allow_envlog_edit' in request.form else ""
 		# validate the received values
 
-		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password'; "
-		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password)
+		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_plantlog_edit';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_envlog_edit'; "
+		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password,_allow_plantlog_edit,_allow_envlog_edit)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
 		flash('Settings updated successfully!','info')
+		app.settings = get_settings()
 		return redirect('/settings')
 	except Exception as e:
 		icon="times-circle"

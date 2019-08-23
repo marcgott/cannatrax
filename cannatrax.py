@@ -26,19 +26,23 @@ def get_icons(operation=None):
     icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast'}
     return icons
 def get_settings():
-	try:
-		conn = mysql.connect()
-		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM options")
-		rows = cursor.fetchall()
-		options={}
-		for row in rows:
-			key = row['option_key']
-			value = row['option_value']
-			options[key]=value
-		return options
-	except Exception as e:
-		print(e)
+    global app
+    try:
+        conn = mysql.connect()
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("SELECT * FROM options")
+        rows = cursor.fetchall()
+        options={}
+        for row in rows:
+            key = row['option_key']
+            value = row['option_value']
+            if row['option_value'] == 'True':
+                    value = True
+            options[key]=value
+        app.settings = options
+        return options
+    except Exception as e:
+        print(e)
 
 def get_daystats(dt=None):
     option=get_settings()

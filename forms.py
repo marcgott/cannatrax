@@ -44,6 +44,8 @@ class SettingsForm(Form):
     length_units = SelectField('Length',choices=[('cm','Centimeters'),('in','Inches')])
     volume_units = SelectField('Volume',choices=[('ml','Mililiters'),('oz','Ounces')])
     date_format = SelectField('Date Format', choices=[('yyyy-mm-dd','yyyy-mm-dd'),('mm/dd/yyyy','mm/dd/yyyy')])
+    allow_plantlog_edit = BooleanField("Allow Plant Log Edits?")
+    allow_envlog_edit = BooleanField("Allow Environment Log Edits?")
 
 class PlantForm(Form):
     strains = get_db_list(table='strain',idval = True,idtxt = "Unknown")

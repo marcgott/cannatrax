@@ -1,7 +1,8 @@
+from app import app
 from flask_table import Table, Col, LinkCol, ButtonCol, BoolCol, BoolNaCol, DateCol, DatetimeCol
 from cannatrax import *
 
-class Log(Table):
+class PlantLog(Table):
     table_id = 'daily_log'
     classes = ['main','chart','log']
     id = Col('id', show=False)
@@ -20,6 +21,8 @@ class Log(Table):
     trim = Col('Trim')
     transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')
     notes = Col('Notes')
+    edit = LinkCol('Edit', 'edit_log', url_kwargs=dict(id='id'), show=False)
+    delete = LinkCol('Delete', 'delete_log', url_kwargs=dict(id='id'), show=False)
 
 class PrintLog(Table):
     table_id = 'print_log'
@@ -136,3 +139,5 @@ class Settings(Table):
     volume_units = Col('Volume Units')
     length_units = Col('Length_Units')
     date_format = Col('Date Format')
+    allow_plantlog_edit = Col('Allow Plant Log Edit/Delete')
+    allow_envlog_edit = Col('Allow Environment Log Edit/Delete')
