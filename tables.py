@@ -78,6 +78,13 @@ class Environment(Table):
     location = Col('Location')
     light_hours = Col('Light Hours')
     temperature = Col('Temperature')
+    humidity = Col('Humidity')
+    light_source = Col('Light Source')
+    lumens = Col('Lumens')
+    wattage = Col('Wattage')
+    grow_area = Col('Grow area')
+    containment = Col('Containment')
+    max_plants = Col('Maximum Number of Plants:')
     edit = LinkCol('Edit', 'edit_environment', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_environment', url_kwargs=dict(id='id'))
 

@@ -160,34 +160,34 @@ def get_water_calendar(dates,plant_name):
     figdata_png = base64.b64encode(figfile.getvalue())
     return figdata_png
 
-def get_height_comparison(data):
+def get_comparison_chart(data,chartname,yaxis_label):
     option=get_settings()
     labels = []
-    heights= []
+    measures= []
 
     for row in data:
         labels.append(row['name'])
-        heights.append(float(row['height']))
+        measures.append(float(row['measure']))
 
     fig, ax = plt.subplots()
-    ylimit = max(heights) + 5
+    ylimit = max(measures) + 5
 
-    d1 = ax.bar(labels,heights,label="Height")
-    plt.axhline(np.average(heights),label="Average",color="r")
+    d1 = ax.bar(labels,measures,label=chartname)
+    plt.axhline(np.average(measures),label="Average",color="r")
 
-    ax.set_ylabel(option['length_units'])
+    ax.set_ylabel(yaxis_label)
     ax.set_xticks(labels)
     ax.set_xticklabels(labels)
     ax.tick_params(width=3)
     ax.set_ylim([0,ylimit])
-    ax.set_title('Average Plant Height')
+    ax.set_title('Average Plant '+chartname)
     for tick in ax.xaxis.get_majorticklabels():
         tick.set_horizontalalignment("right")
 
     ax.xaxis.set_tick_params(rotation=30, labelsize=8)
     ax.legend(loc='upper left')
-    #fig.tight_layout()
 
+    plt.tight_layout()
     figfile = BytesIO()
     fig.savefig(figfile, format='png')
     figfile.seek(0)  # rewind to beginning of file

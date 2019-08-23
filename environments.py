@@ -44,9 +44,17 @@ def add_new_environment_view():
 			_name = request.form['name']
 			_location = request.form['location']
 			_light_hours = request.form['light_hours']
+			_temperature = request.form['temperature']
+			_humidity = request.form['humidity']
+			_light_source = request.form['light_source']
+			_lumens = request.form['lumens']
+			_wattage = request.form['wattage']
+			_grow_area = request.form['grow_area']
+			_containment = request.form['containment']
+			_max_plants = request.form['max_plants']
 
-			sql = "INSERT INTO environment(name,location,light_hours) VALUES(%s, %s, %s)"
-			data = (_name, _location, _light_hours)
+			sql = "INSERT INTO environment(name,location,light_hours,temperature,humidity,light_source,lumens,wattage,grow_area,containment,max_plants) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			data = (_name, _location, _light_hours,_temperature,_humidity,_light_source,_lumens,_wattage,_grow_area,_containment,_max_plants)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
@@ -71,19 +79,32 @@ def edit_environment(id):
 		return redirect("/")
 	icon=None
 	if request.method == "POST":
-		_name = request.form['name']
-		_location = request.form['location']
-		_light_hours = request.form['light_hours']
-		_id = request.form['id']
+		try:
+			_name = request.form['name']
+			_location = request.form['location']
+			_light_hours = request.form['light_hours']
+			_temperature = request.form['temperature']
+			_humidity = request.form['humidity']
+			_light_source = request.form['light_source']
+			_lumens = request.form['lumens']
+			_wattage = request.form['wattage']
+			_grow_area = request.form['grow_area']
+			_containment = request.form['containment']
+			_max_plants = request.form['max_plants']
+			_id = request.form['id']
 
-		sql = "UPDATE environment SET name=%s, location=%s, light_hours=%s WHERE id=%s"
-		data = (_name, _location, _light_hours, _id)
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute(sql, data)
-		conn.commit()
-		icon="spa"
-		flash('environment updated successfully!','info')
+			sql = "UPDATE environment SET name=%s, location=%s, light_hours=%s,temperature=%s,humidity=%s,light_source=%s,lumens=%s,wattage=%s,grow_area=%s,containment=%s,max_plants=%s WHERE id=%s"
+			data = (_name, _location, _light_hours,_temperature,_humidity,_light_source,_lumens,_wattage,_grow_area,_containment,_max_plants, _id)
+			print(sql)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			icon="spa"
+			flash('environment updated successfully!','info')
+		except Exception as e:
+			print(e)
+			flash('Error updating environment','error')
 
 	try:
 		conn = mysql.connect()
@@ -93,9 +114,17 @@ def edit_environment(id):
 
 		if row:
 			form = EnvironmentForm(request.form)
-			form.name.default=row['name']
-			form.location.default=row['location']
-			form.light_hours.default=row['light_hours']
+			form.name.default = row['name']
+			form.location.default = row['location']
+			form.light_hours.default = row['light_hours']
+			form.temperature.default = row['temperature']
+			form.humidity.default = row['humidity']
+			form.light_source.default = row['light_source']
+			form.lumens.default = row['lumens']
+			form.wattage.default = row['wattage']
+			form.grow_area.default = row['grow_area']
+			form.containment.default = row['containment']
+			form.max_plants.default = row['max_plants']
 			form.process()
 		else:
 			return 'Error loading #{id}'.format(id=id)
