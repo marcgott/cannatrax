@@ -2,8 +2,11 @@
 
 import pymysql
 from app import app
-#from flask_table import Table
+from io import BytesIO
+import base64
+import json
 from db_config import mysql
+from werkzeug import secure_filename
 from flask import flash, render_template, request, redirect, session
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
@@ -21,8 +24,8 @@ def show_plants():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
-		rows = cursor.fetchall()
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage, plant.photo FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
+		rows = cursor.fetchall() 
 		table = Plant(rows)
 		table.border = True
 		total_plants = len(rows)
@@ -75,6 +78,7 @@ def edit_plant(id):
 		return redirect("/")
 	icon=None
 	if request.method == "POST":
+		#form = PlantForm(request.form)
 		_name = request.form['name']
 		_gender = request.form['gender']
 		_strain = request.form['strain']
@@ -82,21 +86,27 @@ def edit_plant(id):
 		_source = request.form['source']
 		_id = request.form['id']
 
-		sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s WHERE id=%s"
-		data = (_name, _gender, _strain, _cycle, _source, _id)
-		conn = mysql.connect()
-		cursor = conn.cursor()
-		cursor.execute(sql, data)
-		conn.commit()
-		icon="leaf"
-		flash('Plant updated successfully!','info')
+		if request.files["photo"]:
+			photo_data = request.files["photo"]
+			photo_data.save(secure_filename(photo_data.filename))
+			photo_data.seek(0)  # rewind to beginning of file
+			photo = base64.b64encode(photo_data.getvalue()).decode('utf8')
+			_photo = json.dumps({"mimetype":photo_data.mimetype, "data":photo})
+
+			sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s, photo=%s WHERE id=%s"
+			data = (_name, _gender, _strain, _cycle, _source, _photo, _id)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+			icon="leaf"
+			flash('Plant updated successfully!','info')
 
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT * FROM plant WHERE id=%s", id)
 		row = cursor.fetchone()
-
 		if row:
 			form = PlantForm(request.form)
 			form.name.default=row['name']
@@ -104,11 +114,15 @@ def edit_plant(id):
 			form.source.default=row['source']
 			form.strain.default=row['strain_ID']
 			form.cycle.default=row['cycle_ID']
+			#form.photo.default=row['photo']
 			form.process()
+			#photodata = json.loads(row['photo'])
+			row['photo'] = json.loads(row['photo'])
+
 		else:
 			return 'Error loading #{id}'.format(id=id)
-		title_verb = "Edit"
 
+		title_verb = "Edit"
 		return render_template('operation_form.html', formpage='add_plant.html', title_verb=title_verb, icon=icon, form=form, row=row, operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)

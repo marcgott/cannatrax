@@ -1,4 +1,4 @@
-from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, FloatField, IntegerField, validators, StringField, SubmitField
+from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, FloatField, IntegerField, validators, StringField, SubmitField, FileField
 from pytz import all_timezones
 import pymysql
 from db_config import mysql
@@ -55,6 +55,7 @@ class PlantForm(Form):
     strain = SelectField('Strain',choices=strains)
     cycle = SelectField('Cycle',choices=cycles)
     source = SelectField('Source',choices=[('seed','Seed'),('clone','Clone'),('other','Other')])
+    photo = FileField('Photo')
 
 class CycleForm(Form):
     name = TextField('Name', validators=[validators.required()])
