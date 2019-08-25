@@ -28,7 +28,7 @@
 
 
 <div id="settingsform" style="display:none">
-  <p>Well, that was easy. This will be easier.</p>
+  <p>Well, that was easy. This will be easier. You can change all of these settings later.</p>
   <form id="settings" action="/install/settings" method="POST">
               {{settingsform.csrf}}
   <div class="input text">
@@ -45,6 +45,15 @@
                   {{ settingsform.length_units.label }} {{ settingsform.length_units }}</div>
   <div class="input select">
                   {{ settingsform.volume_units.label }} {{ settingsform.volume_units }}</div>
+If you fill these in with your latitude/longitude, {{program_name}} will be able to tell you how much sunlight to expect for that day.
+  <div class="input select">
+                  {{ settingsform.latitude.label }} {{ settingsform.latitude(value=0) }}</div>
+  <div class="input select">
+                  {{ settingsform.longitude.label }} {{ settingsform.longitude(value=0) }}</div>
+  <div class="input select">
+                  {{ settingsform.allow_plantlog_edit.label }} {{ settingsform.allow_plantlog_edit }}</div>
+  <div class="input select">
+                  {{ settingsform.allow_envlog_edit.label }} {{ settingsform.allow_envlog_edit }}</div>
   <div class="input submit">
                   <input type="submit" value="Submit"></div>
   </form>

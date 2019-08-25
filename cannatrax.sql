@@ -1,31 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10deb1ubuntu0.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Aug 22, 2019 at 09:36 PM
--- Server version: 5.5.62-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.29
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `cannatrax`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cycle`
---
-
+DROP TABLE IF EXISTS `cycle`;
 CREATE TABLE IF NOT EXISTS `cycle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -35,14 +8,10 @@ CREATE TABLE IF NOT EXISTS `cycle` (
   `light_hours` int(2) NOT NULL,
   `total_yield` int(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `environment`
---
-
+DROP TABLE IF EXISTS `environment`;
 CREATE TABLE IF NOT EXISTS `environment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -57,14 +26,10 @@ CREATE TABLE IF NOT EXISTS `environment` (
   `containment` varchar(255) NOT NULL,
   `max_plants` int(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `log`
---
-
+DROP TABLE IF EXISTS `log`;
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plant_ID` int(11) NOT NULL,
@@ -85,14 +50,10 @@ CREATE TABLE IF NOT EXISTS `log` (
   `logdate` date DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=204 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `nutrient`
---
-
+DROP TABLE IF EXISTS `nutrient`;
 CREATE TABLE IF NOT EXISTS `nutrient` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -102,38 +63,19 @@ CREATE TABLE IF NOT EXISTS `nutrient` (
   `potassium` int(2) NOT NULL,
   `trace` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `options`
---
-
+DROP TABLE IF EXISTS `options`;
 CREATE TABLE IF NOT EXISTS `options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `option_key` varchar(255) CHARACTER SET utf8 NOT NULL,
   `option_value` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-INSERT INTO `options` (`id`, `option_key`, `option_value`) VALUES
-(1, 'date_format', 'mm/dd/yyyy'),
-(2, 'timezone', 'Asia/Jerusalem'),
-(3, 'temp_units', 'C'),
-(4, 'length_units', 'cm'),
-(5, 'volume_units', 'ml'),
-(6, 'username', 'admin'),
-(7, 'password', 'admin'),
-(8, 'latitude', '31.0'),
-(9, 'longitude', '35.0');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `plant`
---
-
+DROP TABLE IF EXISTS `plant`;
 CREATE TABLE IF NOT EXISTS `plant` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -146,14 +88,10 @@ CREATE TABLE IF NOT EXISTS `plant` (
   `current_environment` int(4) NOT NULL,
   `current_nodes` int(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `repellent`
---
-
+DROP TABLE IF EXISTS `repellent`;
 CREATE TABLE IF NOT EXISTS `repellent` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -163,14 +101,10 @@ CREATE TABLE IF NOT EXISTS `repellent` (
   `purchase_location` varchar(255) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `report`
---
-
+DROP TABLE IF EXISTS `report`;
 CREATE TABLE IF NOT EXISTS `report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -178,20 +112,12 @@ CREATE TABLE IF NOT EXISTS `report` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `strain`
---
-
+DROP TABLE IF EXISTS `strain`;
 CREATE TABLE IF NOT EXISTS `strain` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `notes` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

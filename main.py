@@ -117,12 +117,14 @@ def update_user():
 		_temp_units = request.form['temp_units']
 		_length_units = request.form['length_units']
 		_volume_units = request.form['volume_units']
+		_latitude = request.form['latitude']
+		_longitude = request.form['longitude']
 		_allow_plantlog_edit = "True" if 'allow_plantlog_edit' in request.form else ""
 		_allow_envlog_edit = "True" if 'allow_envlog_edit' in request.form else ""
 		# validate the received values
 
-		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_plantlog_edit';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_envlog_edit'; "
-		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password,_allow_plantlog_edit,_allow_envlog_edit)
+		sql = "UPDATE options SET `option_value`=%s WHERE `option_key`='timezone'; UPDATE options SET `option_value`=%s WHERE `option_key`='temp_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='length_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='volume_units'; UPDATE options SET `option_value`=%s WHERE `option_key`='date_format';UPDATE options SET `option_value`=%s WHERE `option_key`='username';UPDATE options SET `option_value`=%s WHERE `option_key`='password';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_plantlog_edit';UPDATE options SET `option_value`=%s WHERE `option_key`='allow_envlog_edit';UPDATE options SET `option_value`=%s WHERE `option_key`='latitude';UPDATE options SET `option_value`=%s WHERE `option_key`='longitude'; "
+		data = (_timezone, _temp_units, _length_units, _volume_units, _date_format, _username, _password,_allow_plantlog_edit,_allow_envlog_edit,_latitude,_longitude)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)

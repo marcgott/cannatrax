@@ -17,7 +17,8 @@ $(document).ready(function() {
             $('#installform').hide()
             $('#settingsform').show()
           }else{
-            $('#installform form').prepend("<li class='error'>Something did not go according to plan. Check your information for typos.")
+            console.log(data)
+            $('#database_credentials').prepend("<li class='error'>Something did not go according to plan. Check your information for typos.<br>"+data[1])
           }
        })
      }
