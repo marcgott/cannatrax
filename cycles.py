@@ -22,7 +22,7 @@ def show_cycles():
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT * FROM cycle ORDER BY name ASC")
 		rows = cursor.fetchall()
-		table = Season(rows)
+		table = Cycle(rows)
 		table.border = True
 		total_cycles = len(rows)
 		return render_template('main.html', table=table, total_count=total_cycles, add_operation_url='.add_new_cycle_view',icon=icon,operation=operation,is_login=session.get('logged_in'))
