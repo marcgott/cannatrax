@@ -21,6 +21,7 @@ from api import *
 
 app.program_name="CannaTrax"
 app.settings = get_settings()
+
 try:
 	from db_config import mysql
 except Exception as e:
@@ -144,4 +145,4 @@ def update_user():
 		#conn.close()
 
 if __name__ == "__main__":
-    app.run(debug=False, host='0.0.0.0', port=4200)
+    app.run(use_reloader=True, debug=False, host='0.0.0.0', port=4200)

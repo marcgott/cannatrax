@@ -42,7 +42,6 @@ $(document).ready(function() {
     })
     //Autosets logdate in /log/new, ignored in /log/edit/# and other
     if(typeof $('.datefield').val() != 'undefined' && $('.datefield').val() =='' ){
-      alert($('.datefield').val())
       date = new Date()
       isodate = date.toISOString().split('T')
       $('.datefield').val(isodate[0]);

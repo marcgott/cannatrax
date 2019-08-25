@@ -25,7 +25,7 @@ def show_plants():
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage, plant.photo FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
-		rows = cursor.fetchall() 
+		rows = cursor.fetchall()
 		table = Plant(rows)
 		table.border = True
 		total_plants = len(rows)
@@ -157,9 +157,9 @@ def view_plant(id):
 		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
-		cursor.execute("SELECT MAX( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
+		cursor.execute("SELECT MIN( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
-		rows = cursor.fetchall()
+		stages = cursor.fetchall()
 		cursor.execute("SELECT logdate,span,height,trim FROM log WHERE (height<>0 OR span<>0 OR trim<>'') AND plant_ID=%s ORDER BY logdate ASC", (id,))
 		conn.commit()
 		chart_rows = cursor.fetchall()
@@ -175,7 +175,7 @@ def view_plant(id):
 		cursor.close()
 		conn.close()
 
-	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=rows,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
+	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=stages,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
 
 @app.route('/plant/logs/<int:id>')
 def show_plant_log(id):

@@ -48,7 +48,6 @@ def get_daystats(dt=None):
     option=get_settings()
 
     daydate = date.today()
-    print(daydate)
     req = 'https://api.sunrise-sunset.org/json?lat=%s&lng=%s&date=%s' % (option['latitude'],option['longitude'],daydate)
     res = requests.get(req)
     #print(res.json)
