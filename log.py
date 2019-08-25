@@ -124,7 +124,7 @@ def add_new_log_view():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT id,name FROM plant ORDER BY CAST(name AS unsigned)")
+		cursor.execute("SELECT id as plant_ID,name FROM plant ORDER BY CAST(name AS unsigned)")
 		rows = cursor.fetchall()
 		form = LogForm(request.form)
 	except Exception as e:
@@ -132,21 +132,31 @@ def add_new_log_view():
 	title_verb = "Add"
 	icon="clipboard-check"
 	icons = get_icons()
-	return render_template('operation_form.html', formpage='add_plantlog.html', title_verb=title_verb, form=form, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
+	return render_template('operation_form.html', formpage='add_plantlog.html', action=request.path, title_verb=title_verb, form=form, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/log/edit/<int:id>', methods=['POST','GET'])
 def edit_log(id):
 	icon=None
 	if request.method == "POST":
-		_name = request.form['name']
-		_gender = request.form['gender']
-		_strain = request.form['strain']
-		_cycle = request.form['cycle']
-		_source = request.form['source']
+		_water = 1 if 'water' in request.form else 0
+		_transplant = 1 if 'transplant' in request.form else 0
+		_plant_ID = request.form['plant_ID']
+		_height = request.form['height']
+		_span = request.form['span']
+		_nodes = request.form['nodes']
+		_environment_ID = request.form['environment_ID']
+		_nutrient_ID = request.form['nutrient_ID']
+		_repellent_ID = request.form['repellent_ID']
+		_stage = request.form['stage']
+		_lux = request.form['lux']
+		_soil_pH = request.form['soil_pH']
+		_logdate = request.form['logdate']
+		_trim = request.form['trim']
+		_notes = request.form['notes']
 		_id = request.form['id']
 
-		sql = "UPDATE log SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s WHERE id=%s"
-		data = (_name, _gender, _strain, _cycle, _source, _id)
+		sql = "UPDATE log SET plant_ID=%s, water=%s, height=%s, span=%s, nodes=%s, environment_ID=%s, nutrient_ID=%s, repellent_ID=%s, stage=%s, trim=%s, transplant=%s, notes=%s, logdate=%s, lux=%s, soil_pH=%s WHERE id=%s"
+		data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
@@ -157,18 +167,32 @@ def edit_log(id):
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT * FROM log WHERE id=%s", id)
+		cursor.execute("SELECT log.*, plant.name as name FROM log LEFT JOIN plant ON plant.id=log.plant_ID WHERE log.id=%s LIMIT 1", id)
 		row = cursor.fetchone()
 
 		if row:
 			form = LogForm(request.form)
+			form.id.default = row['id']
+			form.logdate.default = row['logdate'] if row['logdate']!='' else ''
+			form.water.default = True if row['water'] > 0 else 0
+			form.transplant.default = True if row['transplant'] > 0 else 0
+			form.span.default = row['span'] if row['span'] > 0 else ''
+			form.nodes.default = row['nodes'] if row['nodes'] > 0 else ''
+			form.height.default = row['height'] if row['height'] > 0 else ''
+			form.stage.default = row['stage'] if row['stage'] != '' else ''
+			form.lux.default = row['lux'] if row['lux'] > 0 else ''
+			form.soil_pH.default = row['soil_pH'] if row['soil_pH'] > 0 else ''
+			form.environment_ID.default = row['environment_ID'] if row['environment_ID'] != '' else ''
+			form.repellent_ID.default = row['repellent_ID'] if row['repellent_ID'] != '' else ''
+			form.nutrient_ID.default = row['nutrient_ID'] if row['nutrient_ID'] != '' else ''
+			form.notes.default = row['notes'] if row['notes'] !='' else ''
 			form.process()
 		else:
 			return 'Error loading #{id}'.format(id=id)
 		title_verb = "Edit"
 		icon="clipboard-check"
 		icons = get_icons()
-		return render_template('operation_form.html', formpage='add_plantlog.html', title_verb=title_verb, icon=icon, icons=icons, form=form, row=row, rowid=row['id'],operation=operation,is_login=session.get('logged_in'))
+		return render_template('operation_form.html', formpage='add_plantlog.html', action=request.path, title_verb=title_verb, icon=icon, icons=icons, form=form, rows=[row], rowid=row['id'],operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

@@ -44,8 +44,8 @@ table.main.chart td {padding:0.4em}
 #plant_growth_chart {display:inline-block;width:70%;vertical-align: top;margin-top:2em;}
 #plant_growth_chart img {width:80%;}
 
-#plant_image {display:inline-block;vertical-align: top;max-width:60%}
-#plant_image img{border-radius: 50%;width:100%}
+#plant_image {display:inline-block;vertical-align: top;max-width:200px;max-height:200px}
+#plant_image img{border-radius:400px;width:100%}
 
 
 #footer {margin-top:3em}

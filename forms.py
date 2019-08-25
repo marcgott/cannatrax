@@ -102,6 +102,7 @@ class LogForm(Form):
     environment = get_db_list(table = 'environment',idval = True,idtxt = "None")
     nutrient = get_db_list(table = 'nutrient',idval = True,idtxt = "None")
     repellent = get_db_list(table = 'repellent',idval = True,idtxt = "None")
+    id = HiddenField()
     logdate = DateField('Date')
     plant_ID = HiddenField()
     water = BooleanField('Water')

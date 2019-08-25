@@ -2,8 +2,9 @@ $(document).ready(function() {
             $(".logform").submit(function(event){
                event.preventDefault();
                //alert( "Default behavior is disabled!" );
+               form_row_action = $(this).closest("form").attr('action')
                form_row_id = $(this).closest("form").attr('id')
-               $.post("/log/new",$("#"+form_row_id).serialize(),function(data){
+               $.post(form_row_action,$("#"+form_row_id).serialize(),function(data){
                  $("#"+form_row_id).hide()
                })
                //
@@ -39,4 +40,12 @@ $(document).ready(function() {
       $(".report.chart").hide()
       $("#chart_"+$(this).attr('id')).show()
     })
+    //Autosets logdate in /log/new, ignored in /log/edit/# and other
+    if(typeof $('.datefield').val() != 'undefined' && $('.datefield').val() =='' ){
+      alert($('.datefield').val())
+      date = new Date()
+      isodate = date.toISOString().split('T')
+      $('.datefield').val(isodate[0]);
+    }
+
 });
