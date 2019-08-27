@@ -25,6 +25,9 @@ li.error {list-style-type:none;border-left:4px solid #aa7788;background-color:#f
 
 .operation_btn {color:#ffffff; padding:.4em;background-color:#7fbb37;border-radius:.6em}
 .operation_btn select {color:#333333}
+.log_navigation{margin:.8em 0}
+.navigation_btn {color:#ffffff; padding:.5em;margin:0 .2em;background-color:#548727;border-radius:50%}
+.navigation_btn:hover {color:#ffffcc}
 .input {margin-bottom:.4em}
 .log_row {vertical-align:top;background-color: #efefef;padding:.2em}
 .input.log {vertical-align:top;display:inline-block;min-width:5%}

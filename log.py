@@ -18,14 +18,18 @@ def show_logs():
 	if check_login() is not True:
 		return redirect("/")
 	try:
-		global app
+		offset = 0
+		if request.args.get('offset') is not None:
+			offset = 0 + int(request.args.get('offset'))
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID ORDER BY logdate DESC, ts DESC LIMIT 40")
+		sql = "SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID ORDER BY logdate DESC, ts DESC LIMIT %d,40" % int(offset)
+		cursor.execute(sql)
 		rows = cursor.fetchall()
 		#get_settings()
 		table = PlantLog(rows)
 		table.border = True
+		table.plant_name.show=True
 		if isinstance( app.settings["allow_plantlog_edit"],(bool) ):
 			table.edit.show=True
 			table.delete.show=True
@@ -33,8 +37,12 @@ def show_logs():
 			table.edit.show=False
 			table.delete.show=False
 
-		total_logs = len(rows)
-		return render_template('logs.html', table=table, icon=icon, total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		sql = "SELECT COUNT(*)as logcount from log"
+		cursor.execute(sql)
+		rowcount = cursor.fetchone()
+		returned_rows = len(rows)
+		return render_template('logs.html', offset=int(offset), table=table, icon=icon, total_logs=rowcount['logcount'],returned_rows=returned_rows,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `plant` (
   `strain_ID` varchar(255) NOT NULL,
   `cycle_ID` varchar(255) NOT NULL,
   `source` varchar(64) NOT NULL,
+  `grow_medium` VARCHAR( 64 ) NOT NULL,
   `yield` int(3) NOT NULL,
   `current_stage` varchar(255) DEFAULT NULL,
   `current_environment` int(4) NOT NULL,

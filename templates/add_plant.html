@@ -5,6 +5,8 @@
                 {{ form.name.label }} {{ form.name(value=row['name']) }}</div>
 <div class="input select">
                 {{ form.source.label }} {{ form.source }}</div>
+<div class="input text">
+                {{ form.grow_medium.label }} {{ form.grow_medium }}</div>
 <div class="input select">
                 {{ form.gender.label }} {{ form.gender }}</div>
 <div class="input select">
@@ -20,6 +22,8 @@
                 <input type="submit" value="Submit"></div>
 </form>
 </div>
+{% if row is not none %}
 <div id="plant_image">
   <img src="data:{{row.photo.mimetype}};base64,{{row.photo.data}}"\>
 </div>
+{% endif %}

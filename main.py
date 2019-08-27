@@ -19,6 +19,10 @@ from reports import *
 from log import *
 from api import *
 
+app.secret_key = generate_password_hash('cannatrax')
+#app.secret_key = "cannatrax"
+#app.program_name = "CannaTrax"
+app.settings = {}
 app.program_name="CannaTrax"
 app.settings = get_settings()
 

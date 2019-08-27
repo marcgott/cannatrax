@@ -1,5 +1,6 @@
 #! /usr/bin/env python3.5
 
+import os
 import pymysql
 from app import app
 from io import BytesIO
@@ -7,7 +8,7 @@ import base64
 import json
 from db_config import mysql
 from werkzeug import secure_filename
-from flask import flash, render_template, request, redirect, session
+from flask import flash, render_template, request, redirect, session,url_for
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
 from forms import *
@@ -51,9 +52,18 @@ def add_new_plant_view():
 			_strain_ID = request.form['strain']
 			_cycle_ID = request.form['cycle']
 			_source = request.form['source']
+			_grow_medium = request.form['grow_medium']
+			_photo = ''
 
-			sql = "INSERT INTO plant(name,gender,strain_ID,cycle_ID,source) VALUES(%s, %s, %s, %s, %s)"
-			data = (_name, _gender, _strain_ID, _cycle_ID, _source)
+			if request.files["photo"]:
+				photo_data = request.files["photo"]
+				photo_data.save(secure_filename(photo_data.filename))
+				photo_data.seek(0)  # rewind to beginning of file
+				photo = base64.b64encode(photo_data.getvalue()).decode('utf8')
+				_photo = json.dumps({"mimetype":photo_data.mimetype, "data":photo})
+
+			sql = "INSERT INTO plant(name,gender,strain_ID,cycle_ID,source,grow_medium,photo) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+			data = (_name, _gender, _strain_ID, _cycle_ID, _source, _grow_medium, _photo)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
@@ -84,7 +94,9 @@ def edit_plant(id):
 		_strain = request.form['strain']
 		_cycle = request.form['cycle']
 		_source = request.form['source']
+		_grow_medium = request.form['grow_medium']
 		_id = request.form['id']
+		_photo = ''
 
 		if request.files["photo"]:
 			photo_data = request.files["photo"]
@@ -93,14 +105,14 @@ def edit_plant(id):
 			photo = base64.b64encode(photo_data.getvalue()).decode('utf8')
 			_photo = json.dumps({"mimetype":photo_data.mimetype, "data":photo})
 
-			sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s, photo=%s WHERE id=%s"
-			data = (_name, _gender, _strain, _cycle, _source, _photo, _id)
-			conn = mysql.connect()
-			cursor = conn.cursor()
-			cursor.execute(sql, data)
-			conn.commit()
-			icon="leaf"
-			flash('Plant updated successfully!','info')
+		sql = "UPDATE plant SET name=%s, gender=%s, strain_ID=%s, cycle_ID=%s, source=%s, grow_medium=%s, photo=%s WHERE id=%s"
+		data = (_name, _gender, _strain, _cycle, _source, _grow_medium, _photo, _id)
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		cursor.execute(sql, data)
+		conn.commit()
+		icon="leaf"
+		flash('Plant updated successfully!','info')
 
 	try:
 		conn = mysql.connect()
@@ -112,12 +124,23 @@ def edit_plant(id):
 			form.name.default=row['name']
 			form.gender.default=row['gender']
 			form.source.default=row['source']
+			form.grow_medium.default=row['grow_medium']
 			form.strain.default=row['strain_ID']
 			form.cycle.default=row['cycle_ID']
-			#form.photo.default=row['photo']
+			form.photo.default=row['photo']
 			form.process()
 			#photodata = json.loads(row['photo'])
-			row['photo'] = json.loads(row['photo'])
+			try:
+				row['photo'] = json.loads(row['photo'])
+			except Exception as e:
+				APP_PATH = os.path.dirname(__file__)
+				with open(os.path.join(APP_PATH,'static/images/photo_default.png'), 'rb') as photo_data:
+					#print( dir(photo_data) )
+					#photo_data.seek(0)  # rewind to beginning of file
+					photo = base64.b64encode(photo_data.read())
+					print(photo)
+					row['photo'] = {'mimetype':'image/png','data':photo.decode('utf8')}
+				#print(e)
 
 		else:
 			return 'Error loading #{id}'.format(id=id)
@@ -154,13 +177,13 @@ def view_plant(id):
 		option = get_settings()
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, plant.grow_medium, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
 		cursor.execute("SELECT MIN( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
 		stages = cursor.fetchall()
-		cursor.execute("SELECT logdate,span,height,trim FROM log WHERE (height<>0 OR span<>0 OR trim<>'') AND plant_ID=%s ORDER BY logdate ASC", (id,))
+		cursor.execute("SELECT l.logdate,l.span,l.height,l.trim, min(md.logdate) as mindate FROM log l LEFT JOIN log md ON l.plant_ID=md.plant_ID WHERE (l.height<>0 OR l.span<>0 OR l.trim<>'') AND l.plant_ID=%s GROUP BY l.logdate ORDER BY l.logdate ASC", (id,))
 		conn.commit()
 		chart_rows = cursor.fetchall()
 		cursor.execute("SELECT DAY(logdate) as d, MONTH(logdate) as m FROM log WHERE Water=1 AND plant_ID=%s ORDER BY logdate ASC", (id,))
@@ -182,15 +205,23 @@ def show_plant_log(id):
 	if check_login() is not True:
 		return redirect("/")
 	try:
+		offset = 0
+		if request.args.get('offset') is not None:
+			offset = 0 + int(request.args.get('offset'))
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID WHERE plant_ID=%s ORDER BY logdate DESC, ts DESC LIMIT 50",(id))
+		sql = "SELECT log.*, plant.name as plant_name, nutrient.name as nutrient_name, environment.name as environment_name, repellent.name as repellent_name FROM log LEFT JOIN plant ON plant.id = log.plant_ID LEFT JOIN nutrient ON nutrient.id = log.nutrient_ID LEFT JOIN environment ON environment.id = log.environment_ID LEFT JOIN repellent ON repellent.id = log.repellent_ID WHERE plant_ID=%d ORDER BY logdate DESC, ts DESC LIMIT %d,50" % (id,int(offset))
+		cursor.execute(sql)
 		rows = cursor.fetchall()
 		table = PlantLog(rows)
 		table.border = True
-		total_logs = len(rows)
-		#icon="clipboard-check"
-		return render_template('logs.html', table=table, icon=icon, plant_name=rows[0]['plant_name'], total_logs=total_logs,operation=operation,is_login=session.get('logged_in'))
+		table.plant_name.show=False
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		sql = "SELECT COUNT(*)as logcount from log where plant_ID=%d" % id
+		cursor.execute(sql)
+		rowcount = cursor.fetchone()
+		returned_rows = len(rows)
+		return render_template('logs.html', offset=offset,table=table, icon=icon, plant_name=rows[0]['plant_name'], total_logs=rowcount['logcount'],returned_rows=returned_rows,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:

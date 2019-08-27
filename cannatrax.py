@@ -56,15 +56,19 @@ def get_daystats(dt=None):
 def get_measurement_plot(rows,plant_name):
     option=get_settings()
 
-    labels = []
-    heights= []
-    spans = []
+    labels = [0]
+    heights= [0]
+    spans = [0]
     trims = []
     last_span = 0
     last_height = 0
     for row in rows:
+        labels[0]  = row['mindate']
+        heights[0] = 0
+        spans[0] = 0
         labels.append(row['logdate'])
         if row['height'] >0:
+
             heights.append(row['height'])
             last_height = row['height']
         else:
@@ -77,6 +81,7 @@ def get_measurement_plot(rows,plant_name):
             spans.append(last_span)
         #spans.append(row['span'])
         trims.append({'date':row['logdate'],'type':row['trim']})
+
 
     x = np.arange(len(labels))  # the label locations
     fig, ax = plt.subplots()
@@ -105,7 +110,7 @@ def get_measurement_plot(rows,plant_name):
         tick.set_horizontalalignment("right")
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_tick_params(rotation=30, labelsize=10)
-    ax.legend()
+    ax.legend(loc='upper left')
     fig.tight_layout()
 
     figfile = BytesIO()
@@ -183,7 +188,7 @@ def get_comparison_chart(data,chartname,yaxis_label):
     ax.set_xticklabels(labels)
     ax.tick_params(width=3)
     ax.set_ylim([0,ylimit])
-    ax.set_title('Average Plant '+chartname)
+    ax.set_title('Plant '+chartname)
     for tick in ax.xaxis.get_majorticklabels():
         tick.set_horizontalalignment("right")
 

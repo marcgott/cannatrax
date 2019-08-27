@@ -13,6 +13,29 @@
 	{% endwith %}
 </p>
 
-<strong>Last {{total_logs}} Log Entries:</strong>
+<strong>Showing {{offset + 1}}-{{offset + returned_rows }} of {{total_logs}} Log Entries:</strong>
+<div class="log_navigation">
+{% if offset+0 > 0 %}
+<a href="/logs" class="navigation_btn"><i class="fas fa-fast-backward"></i></a>
+<a href="/logs?offset={{offset - 40}}" class="navigation_btn"><i class="fas fa-backward"></i></a>
+{% endif %}
+{% if returned_rows < total_logs - offset %}
+<a href="/logs?offset={{offset + 40}}" class="navigation_btn"><i class="fas fa-forward"></i></a>
+<a href="/logs?offset={{total_logs - 40}}" class="navigation_btn"><i class="fas fa-fast-forward"></i></a>
+{% endif %}
+</div>
+
 {{ table }}
+
+<div class="log_navigation">
+{% if offset+0 > 0 %}
+<a href="/logs" class="navigation_btn"><i class="fas fa-fast-backward"></i></a>
+<a href="/logs?offset={{offset - 40}}" class="navigation_btn"><i class="fas fa-backward"></i></a>
+{% endif %}
+{% if returned_rows < total_logs - offset %}
+<a href="/logs?offset={{offset + 40}}" class="navigation_btn"><i class="fas fa-forward"></i></a>
+<a href="/logs?offset={{total_logs - 40}}" class="navigation_btn"><i class="fas fa-fast-forward"></i></a>
+{% endif %}
+</div>
+
 {% include 'footer.html' %}

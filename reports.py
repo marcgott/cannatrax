@@ -15,6 +15,8 @@ from io import BytesIO
 from db_config import mysql
 from flask import session, redirect
 
+operation="Reports"
+
 @app.route('/reports')
 def show_reports():
     if not session.get('logged_in'):
@@ -47,7 +49,7 @@ def show_reports():
         chart = get_comparison_chart(data,"Transplants","Number of Transplants")
         comparison_chart['transplants'] = chart.decode('utf8')
 
-        return render_template("reports.html",comparison_chart=comparison_chart,icon=get_icons(),option=option,is_login=session.get('logged_in'))
+        return render_template("reports.html",comparison_chart=comparison_chart,icon=get_icons(),operation=operation,option=option,is_login=session.get('logged_in'))
     except Exception as e:
         print(e)
     finally:

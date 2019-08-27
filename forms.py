@@ -54,6 +54,7 @@ class PlantForm(Form):
     gender = SelectField('Gender',choices=[('Unknown','Unknown'),('Male','Male'),('Female','Female'),('Hermaphrodite','Hermaphrodite')])
     strain = SelectField('Strain',choices=strains)
     cycle = SelectField('Cycle',choices=cycles)
+    grow_medium = TextField('Grow Medium')
     source = SelectField('Source',choices=[('seed','Seed'),('clone','Clone'),('other','Other')])
     photo = FileField('Photo')
 
