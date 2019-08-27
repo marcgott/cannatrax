@@ -22,8 +22,11 @@ def do_api_login():
 	option = get_settings();
 
 	print("API LOGIN CALLED")
-	request.get_json(force=True)
-	_json = request.json
+	print(request.data)
+	print(request.args)
+	print(request.form)
+	datastr = request.data.decode('utf-8')
+	_json = json.loads(datastr)
 	api_key = _json['api_key']
 	if _json['api_key'] == app.config['API_KEY']:
 		resp = jsonify({"api_authentcation":"success"})
@@ -37,7 +40,7 @@ def do_api_login():
 		return resp
 
 
-@app.route('/api/log', methods=['GET'])
+@app.route('/api/plants', methods=['GET'])
 def do_api_get_log():
 	option = get_settings();
 	print("API LOG CALLED")
@@ -48,7 +51,7 @@ def do_api_get_log():
 			cursor.execute("SELECT id,name FROM plant")
 			rows = cursor.fetchall()
 			#print(rows)
-			resp = jsonify({'results':rows})
+			resp = jsonify(rows)
 			resp.status_code = 200
 			#print(resp)
 			return resp
@@ -76,7 +79,7 @@ def do_api_get_plant_view(id):
 			cursor.execute("SELECT * FROM plant WHERE id=%s",(id))
 			row = cursor.fetchone()
 			#print(rows)
-			resp = jsonify({'results':row})
+			resp = jsonify(row)
 			resp.status_code = 200
 			return resp
 		except Exception as e:
