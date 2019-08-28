@@ -10,17 +10,17 @@ def get_db_list(**kwargs):
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute("SELECT id,name FROM %s" % kwargs['table'])
         rows = cursor.fetchall()
-        print(kwargs)
         if kwargs['format'] == 'json':
                 return jsonify(rows)
-
-        optval = 0 if kwargs['idval'] == True else "Unknown"
-        opttxt = kwargs['idtxt'] if kwargs['idtxt'] is not None else "Unknown"
-        results = [(optval,opttxt)]
-        for row in rows:
-        	optval = row['id'] if kwargs['idval'] == True else row['name']
-        	results.append((str(optval),row['name']))
+        else:
+            optval = 0 if kwargs['idval'] == True else "Unknown"
+            opttxt = kwargs['idtxt'] if kwargs['idtxt'] is not None else "Unknown"
+            results = [(optval,opttxt)]
+            for row in rows:
+            	optval = row['id'] if kwargs['idval'] == True else row['name']
+            	results.append((str(optval),row['name']))
         return results
+
     except Exception as e:
         print(e)
 
@@ -52,8 +52,8 @@ class SettingsForm(Form):
     allow_envlog_edit = BooleanField("Allow Environment Log Edits?")
 
 class PlantForm(Form):
-    strains = get_db_list(table='strain',idval = True,idtxt = "Unknown")
-    cycles = get_db_list(table='cycle',idval = True,idtxt = "Unknown")
+    strains = get_db_list(table='strain',idval = True,idtxt = "Unknown",format=False)
+    cycles = get_db_list(table='cycle',idval = True,idtxt = "Unknown",format=False)
     name = TextField('Name', validators=[validators.required()])
     gender = SelectField('Gender',choices=[('Unknown','Unknown'),('Male','Male'),('Female','Female'),('Hermaphrodite','Hermaphrodite')])
     strain = SelectField('Strain',choices=strains)
@@ -104,9 +104,9 @@ class RepellentForm(Form):
     notes = TextAreaField('Notes')
 
 class LogForm(Form):
-    environment = get_db_list(table = 'environment',idval = True,idtxt = "None")
-    nutrient = get_db_list(table = 'nutrient',idval = True,idtxt = "None")
-    repellent = get_db_list(table = 'repellent',idval = True,idtxt = "None")
+    environment = get_db_list(table = 'environment',idval = True,idtxt = "None",format=False)
+    nutrient = get_db_list(table = 'nutrient',idval = True,idtxt = "None",format=False)
+    repellent = get_db_list(table = 'repellent',idval = True,idtxt = "None",format=False)
     id = HiddenField()
     logdate = DateField('Date')
     plant_ID = HiddenField()

@@ -66,11 +66,30 @@ def do_api_get_log():
 
 @app.route('/api/plantlog/new/<int:id>', methods=['POST'])
 def do_api_post_plant_log(id):
-	option = get_settings();
-	print("API PLANT NEW ",id," CALLED")
-	print(request.json)
-	print(request.args)
-	print(request.form)
+	try:
+		option = get_settings();
+		print("API PLANT NEW ",id," CALLED")
+		print(request.json)
+		#print(request.args)
+		#print(request.form)
+		keys = []
+		values = []
+
+
+		for k,v in request.json:
+			keys.append(str("`%s`") % k)
+			values.append(str('"%s"') % v)
+		sql = "INSERT INTO log(%s) VALUES(%s)" % (','.join(keys),','.join(values) )
+		conn = mysql.connect()
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute(sql)
+		conn.commit()
+		resp = jsonify({"message":"success"})
+		resp.status_code = 200
+		return resp
+	except Exception as e:
+		print(e)
+
 
 @app.route('/api/plant/view/<int:id>', methods=['GET'])
 def do_api_get_plant_view(id):
@@ -80,10 +99,8 @@ def do_api_get_plant_view(id):
 		try:
 			conn = mysql.connect()
 			cursor = conn.cursor(pymysql.cursors.DictCursor)
-			#cycle_ID,strain_ID,current_environment
 			cursor.execute("SELECT * FROM plant WHERE id=%s",(id))
 			row = cursor.fetchone()
-			#print(rows)
 			resp = jsonify(row)
 			resp.status_code = 200
 			return resp
@@ -102,5 +119,5 @@ def do_api_get_plant_view(id):
 @app.route('/api/list/<string:listname>', methods=['GET'])
 def do_api_get_list(listname):
 	print("API LIST %s CALLED" % listname)
-	list = get_db_list(table = 'environment',idval = True,idtxt = "None",format='json')
+	list = get_db_list(table = listname,idval = True,idtxt = "None",format='json')
 	return list
