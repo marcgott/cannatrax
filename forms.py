@@ -1,5 +1,6 @@
 from wtforms import Form, HiddenField, TextField, PasswordField, SelectField, TextAreaField, DateField, BooleanField, FloatField, IntegerField, validators, StringField, SubmitField, FileField
 from pytz import all_timezones
+from flask import jsonify
 import pymysql
 from db_config import mysql
 
@@ -7,11 +8,14 @@ def get_db_list(**kwargs):
     try:
         conn = mysql.connect()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("SELECT * FROM %s" % kwargs['table'])
+        cursor.execute("SELECT id,name FROM %s" % kwargs['table'])
         rows = cursor.fetchall()
+        print(kwargs)
+        if kwargs['format'] == 'json':
+                return jsonify(rows)
+
         optval = 0 if kwargs['idval'] == True else "Unknown"
         opttxt = kwargs['idtxt'] if kwargs['idtxt'] is not None else "Unknown"
-
         results = [(optval,opttxt)]
         for row in rows:
         	optval = row['id'] if kwargs['idval'] == True else row['name']

@@ -22,9 +22,6 @@ def do_api_login():
 	option = get_settings();
 
 	print("API LOGIN CALLED")
-	print(request.data)
-	print(request.args)
-	print(request.form)
 	datastr = request.data.decode('utf-8')
 	_json = json.loads(datastr)
 	api_key = _json['api_key']
@@ -67,6 +64,14 @@ def do_api_get_log():
 		print(resp)
 		return resp
 
+@app.route('/api/plantlog/new/<int:id>', methods=['POST'])
+def do_api_post_plant_log(id):
+	option = get_settings();
+	print("API PLANT NEW ",id," CALLED")
+	print(request.json)
+	print(request.args)
+	print(request.form)
+
 @app.route('/api/plant/view/<int:id>', methods=['GET'])
 def do_api_get_plant_view(id):
 	option = get_settings();
@@ -93,3 +98,9 @@ def do_api_get_plant_view(id):
 		resp.status_code = 500
 		print(resp)
 		return resp
+
+@app.route('/api/list/<string:listname>', methods=['GET'])
+def do_api_get_list(listname):
+	print("API LIST %s CALLED" % listname)
+	list = get_db_list(table = 'environment',idval = True,idtxt = "None",format='json')
+	return list
