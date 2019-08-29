@@ -39,6 +39,9 @@ table.main.chart td {padding:0.4em}
 .statistics {border-collapse: separate;border-spacing:.3em}
 .statistics td {background-color:#dadada;padding:.4em;border:.4em;text-align:center;}
 
+#operation_buttons a {margin-right:0.2em}
+.dead{background-color:#333333;color:#dddddd;opacity:.7}
+
 #print_log td{padding:.5em .25em}
 .printblank{width:7%;text-align:right;font-size:0.6em;vertical-align: bottom;}
 .printnotes{width:15%;}

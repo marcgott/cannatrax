@@ -12,7 +12,6 @@ from forms import *
 icon="clipboard-check"
 operation="Log"
 #
-# Show default logs page, general statistics
 @app.route('/logs')
 def show_logs():
 	if check_login() is not True:
@@ -38,7 +37,7 @@ def show_logs():
 			table.delete.show=False
 
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		sql = "SELECT COUNT(*)as logcount from log"
+		sql = "SELECT COUNT(*) AS logcount FROM log "
 		cursor.execute(sql)
 		rowcount = cursor.fetchone()
 		returned_rows = len(rows)
@@ -56,7 +55,7 @@ def add_print_log_view():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT name FROM plant ORDER BY CAST(name AS unsigned)")
+		cursor.execute("SELECT name FROM plant  WHERE current_stage NOT IN ('Archive','Dead') ORDER BY CAST(name AS unsigned)")
 		rows = cursor.fetchall()
 		tablerows = []
 		option = get_settings()
@@ -132,7 +131,7 @@ def add_new_log_view():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT id as plant_ID,name FROM plant ORDER BY CAST(name AS unsigned)")
+		cursor.execute("SELECT id as plant_ID,name FROM plant  WHERE current_stage NOT IN ('Archive','Dead') ORDER BY CAST(name AS unsigned)")
 		rows = cursor.fetchall()
 		form = LogForm(request.form)
 	except Exception as e:

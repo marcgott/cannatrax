@@ -28,21 +28,21 @@ def show_reports():
 
         comparison_chart = {}
         # Height Comparison
-        sql = "select plant.name, plant.id, MAX(log.height) as measure, MAX(log.span) as span from log INNER JOIN plant on plant.id=log.plant_ID group by plant_ID ORDER BY measure,span"
+        sql = "select plant.name, plant.id, MAX(log.height) as measure, MAX(log.span) as span from log INNER JOIN plant on plant.id=log.plant_ID WHERE plant.current_stage NOT IN ('Archive','Dead') GROUP BY plant_ID ORDER BY measure,span"
         cursor.execute(sql)
         conn.commit()
         data = cursor.fetchall()
         chart = get_comparison_chart(data,"Height",option["length_units"])
         comparison_chart['height_comparison'] = chart.decode('utf8')
 
-        sql = "select plant.name, plant.id, MAX(log.nodes) as measure from log INNER JOIN plant on plant.id=log.plant_ID WHERE log.nodes > 0 GROUP BY plant_ID  ORDER BY measure"
+        sql = "select plant.name, plant.id, MAX(log.nodes) as measure from log INNER JOIN plant on plant.id=log.plant_ID WHERE log.nodes > 0 AND plant.current_stage NOT IN ('Archive','Dead')GROUP BY plant_ID  ORDER BY measure"
         cursor.execute(sql)
         conn.commit()
         data = cursor.fetchall()
         chart = get_comparison_chart(data,"Nodes","Number of Nodes")
         comparison_chart['node_comparison'] = chart.decode('utf8')
 
-        sql = "select plant.name, plant.id, COUNT(log.transplant) as measure from log INNER JOIN plant on plant.id=log.plant_ID WHERE log.transplant > 0 GROUP BY plant_ID ORDER BY measure"
+        sql = "select plant.name, plant.id, COUNT(log.transplant) as measure from log INNER JOIN plant on plant.id=log.plant_ID WHERE log.transplant > 0 AND plant.current_stage NOT IN ('Archive','Dead') GROUP BY plant_ID ORDER BY measure"
         cursor.execute(sql)
         conn.commit()
         data = cursor.fetchall()
@@ -55,6 +55,3 @@ def show_reports():
     finally:
         cursor.close()
         conn.close()
-
-# Get current height/span of all plants
-sql = "SELECT DISTINCT(plant_ID),max(height) as maxheight ,max(span) as maxspan FROM `log` group by plant_ID"

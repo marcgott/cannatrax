@@ -82,6 +82,9 @@ def add_new_plant_view():
 	title_verb = "Add"
 	return render_template('operation_form.html', formpage='add_plant.html', title_verb=title_verb, form=form, icon=icon, row=None, operation=operation,is_login=session.get('logged_in'))
 
+#
+# Edit
+############################
 @app.route('/plant/edit/<int:id>', methods=['POST','GET'])
 def edit_plant(id):
 	if check_login() is not True:
@@ -138,7 +141,6 @@ def edit_plant(id):
 					#print( dir(photo_data) )
 					#photo_data.seek(0)  # rewind to beginning of file
 					photo = base64.b64encode(photo_data.read())
-					print(photo)
 					row['photo'] = {'mimetype':'image/png','data':photo.decode('utf8')}
 				#print(e)
 
@@ -153,6 +155,9 @@ def edit_plant(id):
 		cursor.close()
 		conn.close()
 
+#
+# delete
+###################################
 @app.route('/plant/delete/<int:id>')
 def delete_plant(id):
 	try:
@@ -168,6 +173,9 @@ def delete_plant(id):
 		conn.close()
 	return redirect("/plants")
 
+#
+# View
+###################################
 @app.route('/plant/view/<int:id>')
 def view_plant(id):
 	if check_login() is not True:
@@ -180,25 +188,41 @@ def view_plant(id):
 		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, plant.grow_medium, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
+
 		cursor.execute("SELECT MIN( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
 		stages = cursor.fetchall()
+
 		cursor.execute("SELECT l.logdate,l.span,l.height,l.trim, min(md.logdate) as mindate FROM log l LEFT JOIN log md ON l.plant_ID=md.plant_ID WHERE (l.height<>0 OR l.span<>0 OR l.trim<>'') AND l.plant_ID=%s GROUP BY l.logdate ORDER BY l.logdate ASC", (id,))
 		conn.commit()
 		chart_rows = cursor.fetchall()
+
 		cursor.execute("SELECT DAY(logdate) as d, MONTH(logdate) as m FROM log WHERE Water=1 AND plant_ID=%s ORDER BY logdate ASC", (id,))
 		conn.commit()
 		water_dates = cursor.fetchall()
 
-		growth_chart = get_measurement_plot(chart_rows,row['name'])
+		growth_chart = get_measurement_plot(chart_rows,row['name'],stages=stages)
 		water_chart = get_water_calendar(water_dates,row['name'])
+
+		height_rank = get_rank(row['id'],'height')
+		span_rank = get_rank(row['id'],'span')
+
+		for i,stage in enumerate(stages):
+			if i+1 >= len(stages):
+				nextdate = date.today()
+			else:
+				nextdate = stages[i+1]['logdate']
+
+			stagetotal = nextdate - stage['logdate']
+			stage['stagetotal'] = stagetotal.days
+
 	except Exception as e:
 		print(e)
 	finally:
 		cursor.close()
 		conn.close()
 
-	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=stages,operation=operation,title_verb=title_verb,is_login=session.get('logged_in'))
+	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=stages,operation=operation,title_verb=title_verb,height_rank=height_rank['rank']+1,span_rank=span_rank['rank']+1,is_login=session.get('logged_in'))
 
 @app.route('/plant/logs/<int:id>')
 def show_plant_log(id):
@@ -216,6 +240,12 @@ def show_plant_log(id):
 		table = PlantLog(rows)
 		table.border = True
 		table.plant_name.show=False
+		if isinstance( app.settings["allow_plantlog_edit"],(bool) ):
+			table.edit.show=True
+			table.delete.show=True
+		else:
+			table.edit.show=False
+			table.delete.show=False
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		sql = "SELECT COUNT(*)as logcount from log where plant_ID=%d" % id
 		cursor.execute(sql)

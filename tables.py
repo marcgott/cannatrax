@@ -1,6 +1,12 @@
 from app import app
+from flask import Markup
 from flask_table import Table, Col, LinkCol, ButtonCol, BoolCol, BoolNaCol, DateCol, DatetimeCol
 from cannatrax import *
+
+class AddIconCol(Col):
+    def td_format(self, content):
+        icon = get_icons()
+        return '<i class="fas fa-%s"></i>  %s' % (icon[content.lower()],content)
 
 class PlantLog(Table):
     table_id = 'daily_log'
@@ -8,7 +14,7 @@ class PlantLog(Table):
     id = Col('id', show=False)
     plant_name = Col('Plant Name')
     logdate = DateCol('Log Date', date_format='medium')
-    stage = Col('Stage')
+    stage = AddIconCol('Stage')
     water = BoolCol('Watered',  yes_display='Yes', no_display='No')
     height = Col('Height')
     span = Col('Span')
@@ -39,22 +45,30 @@ class PrintLog(Table):
     trim = Col('Trim')
     notes = Col('Notes',column_html_attrs={'class':'printnotes'})
 
+
+
 class Plant(Table):
     classes = ['main','chart','plant']
     id = Col('id', show=False)
     name = Col('Name')
-    gender = Col('Gender')
+    gender = AddIconCol('Gender')
     strain_name = Col('Strain')
     cycle_name = Col('Cycle')
     photo = Col('Photo' ,show=False)
-    current_stage = Col('Current Stage', show=False)
-    current_environment = Col('Current Environment', show=False)
+    current_stage = AddIconCol('Current Stage')
+    current_environment = Col('Current Environment')
     source = Col('Source', show=False)
     grow_medium = Col('Grow Medium', show=False)
     log = LinkCol('Log', 'show_plant_log', url_kwargs=dict(id='id'))
     details = LinkCol('Details', 'view_plant', url_kwargs=dict(id='id'))
     edit = LinkCol('Edit', 'edit_plant', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_plant', url_kwargs=dict(id='id'))
+
+    def get_tr_attrs(self, item):
+        if item['current_stage'] == 'Dead':
+            return {'class': 'dead'}
+        else:
+            return {}
 
 class Cycle(Table):
     classes = ['main','chart','cycle']

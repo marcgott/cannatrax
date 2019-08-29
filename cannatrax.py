@@ -10,12 +10,10 @@ import seaborn as sns
 import base64
 import calendar
 import requests
-from datetime import date,datetime
+from datetime import date,datetime,timedelta
 from io import BytesIO
 from db_config import mysql
 from flask import session, redirect, render_template
-
-#sns.set_style("whitegrid")
 
 def check_login():
     if not session.get('logged_in'):
@@ -23,8 +21,9 @@ def check_login():
     return True
 
 def get_icons(operation=None):
-    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast'}
+    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast','unknown':'question','male':'mars','female':'venus','hermaphrodite':'venus-mars','grow_medium':'prescription-bottle'}
     return icons
+
 def get_settings():
     global app
     try:
@@ -53,7 +52,7 @@ def get_daystats(dt=None):
     #print(res.json)
     return res.text
 
-def get_measurement_plot(rows,plant_name):
+def get_measurement_plot(rows,plant_name,**kwargs):
     option=get_settings()
 
     labels = [0]
@@ -62,13 +61,13 @@ def get_measurement_plot(rows,plant_name):
     trims = []
     last_span = 0
     last_height = 0
+    mindate = rows[0]['mindate'] - timedelta(days=2)
     for row in rows:
-        labels[0]  = row['mindate']
+        labels[0]  = mindate
         heights[0] = 0
         spans[0] = 0
         labels.append(row['logdate'])
         if row['height'] >0:
-
             heights.append(row['height'])
             last_height = row['height']
         else:
@@ -82,11 +81,10 @@ def get_measurement_plot(rows,plant_name):
         #spans.append(row['span'])
         trims.append({'date':row['logdate'],'type':row['trim']})
 
-
     x = np.arange(len(labels))  # the label locations
     fig, ax = plt.subplots()
 
-    ylimit = int(max(heights + spans) + 10)
+    ylimit = int(max(heights + spans) + 5)
     d1 = ax.plot_date(labels,heights,fmt='o', tz=None, xdate=True, ydate=False,linestyle='-',label="Height" )
     d2 = ax.plot_date(labels,spans,fmt='o', tz=None, xdate=True, ydate=False,linestyle='-',label="Span")
 
@@ -96,9 +94,17 @@ def get_measurement_plot(rows,plant_name):
             color = "".join(['C',str(i)])
             plt.axvline(trim['date'],label=trim['type'],color=color)
 
-    labels.append(date.today())
+    if 'stages' in kwargs:
+        for i,stage in enumerate(kwargs['stages']):
+            color = "".join(['C',str(i+5)])
+            plt.axvline(stage['logdate'],label=stage['stage'],color=color,linestyle='--')
+            if stage['logdate'] not in labels:
+                labels.append(stage['logdate'])
+
+    if date.today() not in labels:
+        labels.append(date.today())
     ax.set_ylabel(option['length_units'])
-    ax.set_xlim([min(labels),max(labels)])
+    ax.set_xlim([min(labels),max(labels) + timedelta(days=2)])
     ax.set_xticks(labels)
     ax.set_xticklabels(labels)
     ax.grid(True, linestyle='-')
@@ -109,7 +115,7 @@ def get_measurement_plot(rows,plant_name):
     for tick in ax.xaxis.get_majorticklabels():
         tick.set_horizontalalignment("right")
     ax.xaxis.set_major_formatter(formatter)
-    ax.xaxis.set_tick_params(rotation=30, labelsize=10)
+    ax.xaxis.set_tick_params(rotation=30, labelsize=7)
     ax.legend(loc='upper left')
     fig.tight_layout()
 
@@ -203,3 +209,15 @@ def get_comparison_chart(data,chartname,yaxis_label):
     #figdata_png = base64.b64encode(figfile.read())
     figdata_png = base64.b64encode(figfile.getvalue())
     return figdata_png
+
+
+def get_rank(plant_ID,measure):
+
+    sql = "SELECT plant_ID, @prev := @curr as prev, @curr := height as height, @rank := IF(@prev > @curr, @rank+@ties, @rank) AS rank, (1-@rank/@total) as percentrank FROM  log, (SELECT @curr := null, @prev := null, @rank := 0, @ties := 1, @total := count(*) from log where %s is not null) b WHERE %s is not null ORDER BY %s DESC" % (measure,measure,measure)
+    conn = mysql.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    for row in rows:
+        if row['plant_ID'] == plant_ID:
+            return row

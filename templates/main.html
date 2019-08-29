@@ -1,6 +1,6 @@
 {% include 'header.html' %}
 <h2><i class="fas fa-{{icon}}" style="margin-right:.2em"></i>{{ operation }}</h2>
-<p><a href="{{ url_for(add_operation_url) }}" class="operation_btn"><i class="fas fa-plus-circle" style="margin-right:.2em"></i>Add {{ operation }}</a></p>
+<div id="operation_buttons"><a href="{{ url_for(add_operation_url) }}" class="operation_btn"><i class="fas fa-plus-circle" style="margin-right:.2em"></i>Add {{ operation }}</a></div>
 <p>
 	{% with messages = get_flashed_messages(with_categories=true) %}
 	  {% if messages %}
@@ -14,4 +14,22 @@
 </p>
 <strong>Total {{ operation }}: {{total_count}}</strong>
 {{ table }}
+{% if operation == 'Plants' %}
+<script>
+$(document).ready(function(){
+	iconi = '<i class="fas fa-skull-crossbones" style="margin-right:.2em"></i>'
+ $("#operation_buttons").append('<a href="#" id="hide_dead" class="operation_btn">'+iconi+'Hide Dead</a>')
+	$("#hide_dead").click(function(){
+		$(".dead").toggle()
+		if($(this).text() == "Hide Dead"){
+			$(this).html(iconi+"Show Dead")
+		}else{
+			$(this).html(iconi+"Hide Dead")
+		}
+
+	})
+ })
+
+</script>
+{% endif %}
 {% include 'footer.html' %}
