@@ -60,7 +60,7 @@ def add_new_environment_view():
 			cursor.execute(sql, data)
 			conn.commit()
 			icon="spa"
-			flash('New Environment Added!','info')
+			flash('New Environment Added','info')
 		except Exception as e:
 			icon="remove"
 			flash('New environment Not Added!','error')
@@ -101,7 +101,7 @@ def edit_environment(id):
 			cursor.execute(sql, data)
 			conn.commit()
 			icon="spa"
-			flash('environment updated successfully!','info')
+			flash('Environment updated successfully!','info')
 		except Exception as e:
 			print(e)
 			flash('Error updating environment','error')
@@ -144,7 +144,7 @@ def delete_environment(id):
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM environment WHERE id=%s", (id,))
 		conn.commit()
-		flash('environment deleted successfully!','info')
+		flash('Environment deleted successfully!','info')
 	except Exception as e:
 		print(e)
 	finally:

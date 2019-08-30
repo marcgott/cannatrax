@@ -5,7 +5,12 @@ $(document).ready(function() {
                form_row_action = $(this).closest("form").attr('action')
                form_row_id = $(this).closest("form").attr('id')
                $.post(form_row_action,$("#"+form_row_id).serialize(),function(data){
-                 $("#"+form_row_id).hide()
+                 $("#"+form_row_id).html("<div><ul><li class='info'>Log Submitted for "+$("#"+form_row_id).find("h3").text()+"</li></ul></div>")
+
+               }).then(function(){
+                 if( $('.logform').length == 1){
+                   location.href='/logs'
+                 }
                })
                //
             });
@@ -34,6 +39,9 @@ $(document).ready(function() {
             });
             $('#global_stage').on('change',function(){
               $('.stagefield').val($(this).val());
+            });
+            $('#global_lux').on('keyup',function(){
+              $('.luxfield').val($(this).val());
             });
 
     $(".reportlink").click(function(){

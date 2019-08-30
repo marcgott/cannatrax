@@ -21,7 +21,7 @@ def check_login():
     return True
 
 def get_icons(operation=None):
-    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast','unknown':'question','male':'mars','female':'venus','hermaphrodite':'venus-mars','grow_medium':'prescription-bottle'}
+    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast','unknown':'question','male':'mars','female':'venus','hermaphrodite':'venus-mars','grow_medium':'prescription-bottle','lux':'lightbulb'}
     return icons
 
 def get_settings():

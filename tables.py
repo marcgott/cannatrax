@@ -22,7 +22,7 @@ class PlantLog(Table):
     nutrient_name = Col('Nutrient')
     repellent_name = Col('Repellent')
     environment_name = Col('Environment')
-    lux = Col('Lux')
+    lux = Col('Lux',td_html_attrs={'class':'luxlevel'})
     soil_pH = Col('Soil pH')
     trim = Col('Trim')
     transplant = BoolCol('Transplant',  yes_display='Yes', no_display='No')

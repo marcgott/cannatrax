@@ -168,6 +168,14 @@ def edit_log(id):
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
+		
+		sql = "UPDATE plant set current_stage=%s , current_environment=%s, current_nodes=%s WHERE id=%s"
+		data = (_stage,_environment_ID, _nodes, _plant_ID)
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		cursor.execute(sql, data)
+		conn.commit()
+
 		icon="clipboard-check"
 		flash('Log updated successfully!','info')
 

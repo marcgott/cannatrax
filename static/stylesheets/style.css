@@ -42,6 +42,7 @@ table.main.chart td {padding:0.4em}
 #operation_buttons a {margin-right:0.2em}
 .dead{background-color:#333333;color:#dddddd;opacity:.7}
 
+#global_lux{width:2.5em;color:#000000}
 #print_log td{padding:.5em .25em}
 .printblank{width:7%;text-align:right;font-size:0.6em;vertical-align: bottom;}
 .printnotes{width:15%;}
@@ -53,7 +54,7 @@ table.main.chart td {padding:0.4em}
 #plant_image {display:inline-block;vertical-align: top;max-width:200px;max-height:200px}
 #plant_image img{border-radius:400px;width:100%}
 
-
+#daily_log th {background-color:#548727;padding:.4em;color:#ffffff}
 #footer {margin-top:3em}
 
 #charts {display:inline-block}
