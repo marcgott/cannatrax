@@ -21,7 +21,6 @@ from api import *
 
 #app.secret_key = generate_password_hash('cannatrax')
 app.secret_key = "cannatrax"
-app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.settings = {}
 app.program_name="CannaTrax"
 app.settings = get_settings()
