@@ -54,7 +54,7 @@ table.main.chart td {padding:0.4em}
 #plant_image {display:inline-block;vertical-align: top;max-width:200px;max-height:200px}
 #plant_image img{border-radius:400px;width:100%}
 
-#daily_log th {background-color:#548727;padding:.4em;color:#ffffff}
+#daily_log th {background-color:#548727;padding:.01em;color:#ffffff}
 #footer {margin-top:3em}
 
 #charts {display:inline-block}
