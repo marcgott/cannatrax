@@ -73,6 +73,48 @@ def add_new_environment_view():
 	title_verb = "Add"
 	return render_template('operation_form.html', formpage='add_environment.html', title_verb=title_verb, form=form, icon=icon, row=None,operation=operation,is_login=session.get('logged_in'))
 
+@app.route('/environment/log/new', methods=['POST','GET'])
+def add_new_log_environment():
+	if check_login() is not True:
+		return redirect("/")
+	icon=None
+	if request.method == 'POST':
+		try:
+			_environment_ID = request.form['environment_ID']
+			_logdate = request.form['logdate']
+			_temperature = request.form['temperature']
+			_humidity = request.form['humidity']
+			_light = request.form['light']
+			_dark = request.form['dark']
+			_lux = request.form['lux']
+
+			sql = "INSERT INTO envlog(environment_ID,logdate,temperature,humidity,light,dark,lux) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+			data = (_environment_ID,_logdate,_temperature,_humidity,_light,_dark,_lux)
+			conn = mysql.connect()
+			cursor = conn.cursor()
+			cursor.execute(sql, data)
+			conn.commit()
+		except Exception as e:
+			print(e)
+
+@app.route('/environment/log/edit/<int:id>', methods=['POST','GET'])
+def edit_log_environment(id):
+	if check_login() is not True:
+		return redirect("/")
+	icon=None
+	if request.method == 'POST':
+		try:
+			_is = request.form['id']
+			_environment_ID = request.form['environment_ID']
+			_logdate = request.form['logdate']
+			_temperature = request.form['temperature']
+			_humidity = request.form['humidity']
+			_light = request.form['light']
+			_dark = request.form['dark']
+			_lux = request.form['lux']
+		except Exception as e:
+			print(e)
+
 @app.route('/environment/edit/<int:id>', methods=['POST','GET'])
 def edit_environment(id):
 	if check_login() is not True:

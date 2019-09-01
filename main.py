@@ -58,6 +58,11 @@ def show_menu():
 		settings_list.append(settings)
 		settings_table = Settings(settings_list)
 		day = json.loads(get_daystats())
+		session['daylight'] = day['results']['day_length']
+		format = '%H:%M:%S'
+		midnight = "23:59:59"
+		darkness = datetime.strptime(midnight, format) - datetime.strptime(session['daylight'], format)
+		session['darkness'] = str(darkness)
 		icon="tachometer-alt"
 		return render_template('dashboard.html', day=day['results'], icon=icon, table=table, program_name=app.program_name, settings_table=settings_table,settings=settings,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:

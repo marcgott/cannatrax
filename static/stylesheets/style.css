@@ -29,6 +29,7 @@ li.error {list-style-type:none;border-left:4px solid #aa7788;background-color:#f
 .navigation_btn {color:#ffffff; padding:.5em;margin:0 .2em;background-color:#548727;border-radius:50%}
 .navigation_btn:hover {color:#ffffcc}
 .input {margin-bottom:.4em}
+#environment_log_form input[type=text]{max-width:3.5em;color:#000000}
 .log_row {vertical-align:top;background-color: #efefef;padding:.2em}
 .input.log {vertical-align:top;display:inline-block;min-width:5%}
 .input.log input[type=text] {display:inline-block!important;max-width:2.5em}
@@ -39,13 +40,19 @@ table.main.chart td {padding:0.4em}
 .statistics {border-collapse: separate;border-spacing:.3em}
 .statistics td {background-color:#dadada;padding:.4em;border:.4em;text-align:center;}
 
+.missing{background-color:#ef8888}
+
 #operation_buttons a {margin-right:0.2em}
 .dead{background-color:#333333;color:#dddddd;opacity:.7}
 
 #global_lux{width:2.5em;color:#000000}
-#print_log td{padding:.5em .25em}
-.printblank{width:7%;text-align:right;font-size:0.6em;vertical-align: bottom;}
-.printnotes{width:15%;}
+
+#print_log,#print_environment{width:100%;margin-bottom:.5em}
+.box {width:50px;height:30px;padding-right:.5em;border:1px solid #000000;margin-right:.6em}
+#print_log td{min-width:6%;padding:.5em .25em}
+.printblank{width:6%;text-align:right;font-size:0.6em;vertical-align: bottom;}
+.printname{width:30%;}
+.printnotes{width:20%;}
 
 #plant_details {display:inline-block;width:20%;vertical-align: top;margin-top:2em;}
 #plant_growth_chart {display:inline-block;width:70%;vertical-align: top;margin-top:2em;}

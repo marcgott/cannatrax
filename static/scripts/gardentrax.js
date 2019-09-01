@@ -15,6 +15,12 @@ $(document).ready(function() {
                //
             });
             $( function() {
+              if( $('.environmentfield').val() == 0){
+                $('.environmentfield').addClass('missing')
+              }
+              if( $('.stagefield').val() == 'None'){
+                $('.stagefield').addClass('missing')
+              }
               $( ".datefield" ).datepicker({dateFormat: 'yy-mm-dd'});
             } );
             $('#globaldate').click(function(){
@@ -29,6 +35,7 @@ $(document).ready(function() {
               $('.watercheck').prop('checked',true);
             });
             $('#global_environment_ID').on('change',function(){
+              $('.environmentfield').removeClass('missing')
               $('.environmentfield').val($(this).val());
             });
             $('#global_nutrient_ID').on('change',function(){
@@ -38,6 +45,7 @@ $(document).ready(function() {
               $('.repellentfield').val($(this).val());
             });
             $('#global_stage').on('change',function(){
+              $('.stagefield').removeClass('missing')
               $('.stagefield').val($(this).val());
             });
             $('#global_lux').on('keyup',function(){

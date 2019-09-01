@@ -32,15 +32,15 @@ class PlantLog(Table):
 
 class PrintLog(Table):
     table_id = 'print_log'
-    name = Col('Plant Name')
-    picture = Col('Photo')
+    name = Col('Plant Name',td_html_attrs={'class':'printname'})
+    picture = Col('Photo', show=False)
     water = Col('H2O',td_html_attrs={'class':'printblank'})
     nutrient = Col('Nutr.')
     height = Col('Height',td_html_attrs={'class':'printblank'})
     span = Col('Span',td_html_attrs={'class':'printblank'})
     nodes = Col('Nodes',td_html_attrs={'class':'printblank'})
     transplant = Col('Repot')
-    lux = Col('Lux')
+    lux = Col('Lux', show=False)
     soil_pH = Col('pH')
     trim = Col('Trim')
     notes = Col('Notes',column_html_attrs={'class':'printnotes'})

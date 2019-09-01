@@ -20,7 +20,6 @@ def get_db_list(**kwargs):
             	optval = row['id'] if kwargs['idval'] == True else row['name']
             	results.append((str(optval),row['name']))
         return results
-
     except Exception as e:
         print(e)
 
@@ -38,7 +37,6 @@ class SettingsForm(Form):
     timezone_choices = []
     for tz in all_timezones:
         timezone_choices.append((tz,tz))
-    #print(timezone_choices)
     username = TextField('Username')
     password = TextField('Password')
     timezone = SelectField('Timezone',choices=timezone_choices)
@@ -114,15 +112,25 @@ class LogForm(Form):
     height = IntegerField('Height')
     span = IntegerField('Span')
     nodes = IntegerField('Nodes')
-    trim = SelectField('Trim',choices=[('','None'),('Topping','Topping'),('Fimming','Fimming'),('ICE','ICE'),('Lollipop','Lollipop')])
-    lux = IntegerField('Lux')
-    soil_pH = IntegerField('Soil pH')
+    trim = SelectField('Trim',choices=[('','None'),('Topping','Topping'),('Fimming','Fimming'),('ICE','ICE'),('Lollipop','Lollipop'),('Clone','Clone')])
+    #lux = IntegerField('Lux')
+    #temperature = IntegerField('Temperature')
+    soil_pH = IntegerField('pH')
     transplant = BooleanField('Transplant')
-    stage = SelectField('Stage',choices=[('Germination','Germination'),('Seedling','Seedling'),('Vegetation','Vegetation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
+    stage = SelectField('Stage',choices=[('None','None'),('Germination','Germination'),('Seedling','Seedling'),('Vegetation','Vegetation'),('Pre-Flowering','Pre-Flowering'),('Flowering','Flowering'),('Harvest','Harvest'),('Archive','Archive'),('Dead','Dead')])
     environment_ID = SelectField('Environment',choices=environment, coerce=int)
     nutrient_ID = SelectField('Nutrient',choices=nutrient, coerce=int)
     repellent_ID = SelectField('Repellent',choices=repellent, coerce=int)
     notes = TextAreaField('Notes')
+
+class EnvironmentLogForm(Form):
+    environment_ID = HiddenField()
+    logdate = DateField('Date')
+    temperature = IntegerField('Temperature')
+    humidity = IntegerField('Humidity')
+    light = IntegerField('Light')
+    dark = IntegerField('Dark')
+    lux = IntegerField('Lux')
 
 class ApiForm(Form):
     api_key = TextField('API KEY')

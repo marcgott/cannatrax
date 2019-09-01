@@ -38,6 +38,7 @@ def show_plants():
 		cursor.close()
 		conn.close()
 
+
 #
 # Display and process new plant
 @app.route('/plant/new', methods=['GET','POST'])

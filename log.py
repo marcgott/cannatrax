@@ -11,7 +11,7 @@ from forms import *
 
 icon="clipboard-check"
 operation="Log"
-#
+
 @app.route('/logs')
 def show_logs():
 	if check_login() is not True:
@@ -101,14 +101,13 @@ def add_new_log_view():
 			_nutrient_ID = request.form['nutrient_ID']
 			_repellent_ID = request.form['repellent_ID']
 			_stage = request.form['stage']
-			_lux = request.form['lux']
 			_soil_pH = request.form['soil_pH']
 			_logdate = request.form['logdate']
 			_trim = request.form['trim']
 			_notes = request.form['notes']
 
-			sql = "INSERT INTO log(plant_ID, water, height, span, nodes, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate, lux, soil_pH ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-			data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH)
+			sql = "INSERT INTO log(plant_ID, water, height, span, nodes, environment_ID, nutrient_ID, repellent_ID, stage, trim, transplant, notes, logdate,  soil_pH ) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+			data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _soil_pH)
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			cursor.execute(sql, data)
@@ -134,12 +133,16 @@ def add_new_log_view():
 		cursor.execute("SELECT id as plant_ID,name FROM plant  WHERE current_stage NOT IN ('Archive','Dead') ORDER BY CAST(name AS unsigned)")
 		rows = cursor.fetchall()
 		form = LogForm(request.form)
+		envform = EnvironmentLogForm(request.form)
+		envform.light.default = session['daylight']
+		envform.dark.default = session['darkness']
+		envform.process()
 	except Exception as e:
 		print(e)
 	title_verb = "Add"
 	icon="clipboard-check"
 	icons = get_icons()
-	return render_template('operation_form.html', formpage='add_plantlog.html', action=request.path, title_verb=title_verb, form=form, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
+	return render_template('operation_form.html', formpage='add_plantlog.html', action=request.path, title_verb=title_verb, form=form,envform=envform, icon=icon, icons=icons, rows=rows,operation=operation,is_login=session.get('logged_in'))
 
 @app.route('/log/edit/<int:id>', methods=['POST','GET'])
 def edit_log(id):
@@ -155,20 +158,19 @@ def edit_log(id):
 		_nutrient_ID = request.form['nutrient_ID']
 		_repellent_ID = request.form['repellent_ID']
 		_stage = request.form['stage']
-		_lux = request.form['lux']
 		_soil_pH = request.form['soil_pH']
 		_logdate = request.form['logdate']
 		_trim = request.form['trim']
 		_notes = request.form['notes']
 		_id = request.form['id']
 
-		sql = "UPDATE log SET plant_ID=%s, water=%s, height=%s, span=%s, nodes=%s, environment_ID=%s, nutrient_ID=%s, repellent_ID=%s, stage=%s, trim=%s, transplant=%s, notes=%s, logdate=%s, lux=%s, soil_pH=%s WHERE id=%s"
-		data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _lux, _soil_pH, _id)
+		sql = "UPDATE log SET plant_ID=%s, water=%s, height=%s, span=%s, nodes=%s, environment_ID=%s, nutrient_ID=%s, repellent_ID=%s, stage=%s, trim=%s, transplant=%s, notes=%s, logdate=%s, soil_pH=%s WHERE id=%s"
+		data = (_plant_ID, _water, _height, _span, _nodes, _environment_ID, _nutrient_ID, _repellent_ID, _stage, _trim, _transplant, _notes, _logdate, _soil_pH, _id)
 		conn = mysql.connect()
 		cursor = conn.cursor()
 		cursor.execute(sql, data)
 		conn.commit()
-		
+
 		sql = "UPDATE plant set current_stage=%s , current_environment=%s, current_nodes=%s WHERE id=%s"
 		data = (_stage,_environment_ID, _nodes, _plant_ID)
 		conn = mysql.connect()
@@ -195,7 +197,6 @@ def edit_log(id):
 			form.nodes.default = row['nodes'] if row['nodes'] > 0 else ''
 			form.height.default = row['height'] if row['height'] > 0 else ''
 			form.stage.default = row['stage'] if row['stage'] != '' else ''
-			form.lux.default = row['lux'] if row['lux'] > 0 else ''
 			form.soil_pH.default = row['soil_pH'] if row['soil_pH'] > 0 else ''
 			form.environment_ID.default = row['environment_ID'] if row['environment_ID'] != '' else ''
 			form.repellent_ID.default = row['repellent_ID'] if row['repellent_ID'] != '' else ''
