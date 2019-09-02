@@ -13,7 +13,6 @@
 	{% endwith %}
 </p>
 <strong>Total {{ operation }}: {{total_count}}</strong>
-{{ table }}
 {% if operation == 'Plants' %}
 <script>
 $(document).ready(function(){
@@ -29,7 +28,15 @@ $(document).ready(function(){
 
 	})
  })
-
 </script>
+<p><strong>Total {{operation}} by stage:  </strong>
+{% for stage in stagecount %}
+<span style="margin-right:.2em">{{stage.name}}: {{stage.count}}</span>
+{% endfor %}
+</p>
 {% endif %}
+
+{{ table }}
+
+
 {% include 'footer.html' %}

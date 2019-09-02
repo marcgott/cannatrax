@@ -12,7 +12,7 @@ class PlantLog(Table):
     table_id = 'daily_log'
     classes = ['main','chart','log']
     id = Col('id', show=False)
-    plant_name = Col('Plant Name')
+    plant_name = LinkCol('Plant Name', 'view_plant', url_kwargs=dict(id='plant_ID'),attr='plant_name')
     logdate = DateCol('Log Date', date_format='short')
     stage = AddIconCol('Stage')
     water = BoolCol('Water',  yes_display='Yes', no_display='No')

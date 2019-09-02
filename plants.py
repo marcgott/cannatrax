@@ -27,11 +27,17 @@ def show_plants():
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage, plant.photo FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
 		rows = cursor.fetchall()
-		table = Plant(rows)
-		table.border = True
 		total_plants = len(rows)
 
-		return render_template('main.html', table=table, total_count=total_plants, add_operation_url='.add_new_plant_view',icon=icon,operation=operation,is_login=session.get('logged_in'))
+		sql = "SELECT current_stage as name,count(current_stage) as count FROM plant GROUP BY current_stage"
+		cursor = conn.cursor(pymysql.cursors.DictCursor)
+		cursor.execute(sql)
+		stagecount = cursor.fetchall()
+
+		table = Plant(rows)
+		table.border = True
+
+		return render_template('main.html', table=table, total_count=total_plants, add_operation_url='.add_new_plant_view',icon=icon,stagecount=stagecount,operation=operation,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
 	finally:
